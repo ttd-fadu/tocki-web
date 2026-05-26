@@ -508,14 +508,10 @@ tr:hover td { background:rgba(255,255,255,0.02); }
       <div class="field"><label>Composición</label><input id="t-comp" placeholder="80% Algodón / 20% Elastano"></div>
       <div class="field"><label>Usos sugeridos</label><input id="t-usos" placeholder="Remeras, vestidos..."></div>
       <div class="field form-full">
-        <label>Imagen</label>
-        <div class="upload-zone" onclick="document.getElementById('t-img-inp').click()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <p>Hacé click para subir imagen</p>
-          <span>JPG, PNG, WebP — máx. 5MB</span>
-          <input type="file" id="t-img-inp" accept="image/*" onchange="previewImg(this,'t-preview')">
-        </div>
-        <img id="t-preview" class="preview-img" alt="">
+        <label>Nombre del archivo de imagen</label>
+        <input id="t-img" placeholder="ej: jersey-premium.jpg" style="background:var(--darker);border:1px solid var(--border);border-radius:4px;color:var(--white);font-family:'Poppins',sans-serif;font-size:13px;padding:10px 12px;outline:none;width:100%;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" oninput="previewFilename(this.value,'t-preview-img')">
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">📁 El archivo debe estar en la carpeta <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;">fotos/</code> del repo de GitHub</div>
+        <img id="t-preview-img" style="display:none;width:100%;height:140px;object-fit:cover;border-radius:4px;margin-top:10px;" alt="" onerror="this.style.display='none'">
       </div>
     </div>
     <div class="modal-actions">
@@ -577,14 +573,10 @@ tr:hover td { background:rgba(255,255,255,0.02); }
       <div class="field form-full"><label>Descripción</label><textarea id="a-desc" placeholder="Descripción para vendedores..."></textarea></div>
       <div class="field form-full"><label>Colores disponibles</label><input id="a-colores" placeholder="Negro, Blanco, Azul..."></div>
       <div class="field form-full">
-        <label>Imagen</label>
-        <div class="upload-zone" onclick="document.getElementById('a-img-inp').click()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-          <p>Hacé click para subir imagen</p>
-          <span>JPG, PNG, WebP — máx. 5MB</span>
-          <input type="file" id="a-img-inp" accept="image/*" onchange="previewImg(this,'a-preview')">
-        </div>
-        <img id="a-preview" class="preview-img" alt="">
+        <label>Nombre del archivo de imagen</label>
+        <input id="a-img" placeholder="ej: lulu-light.jpg" style="background:var(--darker);border:1px solid var(--border);border-radius:4px;color:var(--white);font-family:'Poppins',sans-serif;font-size:13px;padding:10px 12px;outline:none;width:100%;transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" oninput="previewFilename(this.value,'a-preview-img')">
+        <div style="font-size:11px;color:var(--muted);margin-top:6px;">📁 El archivo debe estar en la carpeta <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;">fotos/</code> del repo de GitHub</div>
+        <img id="a-preview-img" style="display:none;width:100%;height:140px;object-fit:cover;border-radius:4px;margin-top:10px;" alt="" onerror="this.style.display='none'">
       </div>
     </div>
     <div class="modal-actions">
@@ -694,79 +686,109 @@ function renderStats() {
 }
 
 // ── SLOTS ──
+// Las fotos se referencian por nombre de archivo — se leen desde /fotos/ en el repo
 const SLOT_DEFS = [
-  {id:'home_produccion', nombre:'Foto de producción', pagina:'Home'},
-  {id:'fabrica_gente',   nombre:'Gente trabajando',   pagina:'La fábrica'},
-  {id:'fabrica_tejeduria',nombre:'Tejeduría',          pagina:'La fábrica'},
-  {id:'home_hero',       nombre:'Fondo hero',          pagina:'Home (opcional)'},
+  {id:'home_produccion',   nombre:'Foto de producción',   pagina:'Home',             hint:'franja entre features y CTA'},
+  {id:'fabrica_gente',     nombre:'Gente trabajando',     pagina:'La fábrica',       hint:'primera foto de la página'},
+  {id:'fabrica_tejeduria', nombre:'Tejeduría',            pagina:'La fábrica',       hint:'segunda foto grande'},
+  {id:'home_hero',         nombre:'Fondo hero (opcional)',pagina:'Home',             hint:'imagen de fondo del hero'},
 ];
 
 function renderSlots() {
   document.getElementById('slotsGrid').innerHTML = SLOT_DEFS.map(sl => {
-    const m = S.slots[sl.id];
+    const nombre = S.slots[sl.id] || '';
+    const previewUrl = nombre ? `fotos/${nombre}` : '';
     return `<div class="slot-card">
-      <div class="slot-preview">
-        ${m ? (m.type==='video' ? `<video src="${m.url}" autoplay muted loop playsinline></video>` : `<img src="${m.url}" alt="">`)
-             : `<div class="slot-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Sin contenido</div>`}
+      <div class="slot-preview" id="prev-${sl.id}">
+        ${previewUrl
+          ? `<img src="${previewUrl}" alt="${sl.nombre}" onerror="this.parentElement.innerHTML='<div class=\'slot-preview-empty\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><circle cx=\'8.5\' cy=\'8.5\' r=\'1.5\'/><path d=\'M21 15l-5-5L5 21\'/></svg>Archivo no encontrado</div>'">`
+          : `<div class="slot-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Sin archivo</div>`
+        }
       </div>
       <div class="slot-info">
         <div class="slot-name">${sl.nombre}</div>
-        <div class="slot-page">${sl.pagina}</div>
-        <div class="slot-actions">
-          <button class="btn-upload">Subir<input type="file" accept="image/*,video/*" onchange="uploadSlot('${sl.id}',this)"></button>
-          ${m ? `<button class="btn-clear" onclick="clearSlot('${sl.id}')">Quitar</button>` : ''}
+        <div class="slot-page">${sl.pagina} — <span style="opacity:0.6;font-size:11px;">${sl.hint}</span></div>
+        <div style="margin-top:10px;">
+          <label style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Nombre del archivo</label>
+          <div style="display:flex;gap:6px;">
+            <input
+              type="text"
+              placeholder="ej: foto-produccion.jpg"
+              value="${nombre}"
+              id="slot-inp-${sl.id}"
+              style="flex:1;background:var(--darker);border:1px solid var(--border);border-radius:4px;color:var(--white);font-family:'Poppins',sans-serif;font-size:12px;padding:7px 10px;outline:none;"
+              onkeydown="if(event.key==='Enter')guardarSlot('${sl.id}')"
+            >
+            <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="guardarSlot('${sl.id}')">Guardar</button>
+            ${nombre ? `<button class="btn btn-danger" style="padding:7px 10px;font-size:12px;" onclick="clearSlot('${sl.id}')">✕</button>` : ''}
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">
+            📁 Subí el archivo a la carpeta <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;">fotos/</code> en GitHub
+          </div>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-function uploadSlot(id, input) {
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    S.slots[id] = { url: e.target.result, type: file.type };
-    save(); renderSlots(); renderStats(); toast('Archivo guardado');
-  };
-  reader.readAsDataURL(file);
+function guardarSlot(id) {
+  const val = document.getElementById('slot-inp-'+id).value.trim();
+  if(val) S.slots[id] = val; else delete S.slots[id];
+  save(); renderSlots(); renderStats();
+  toast(val ? 'Nombre guardado — subí el archivo a /fotos/ en GitHub' : 'Archivo quitado');
 }
 
 function clearSlot(id) { delete S.slots[id]; save(); renderSlots(); renderStats(); toast('Archivo quitado'); }
 
 // ── SVGs ──
+// Los SVGs se referencian por nombre — se leen desde /logos/ en el repo
 const SVG_DEFS = [
-  {id:'logo_isotipo', nombre:'Isotipo (círculo)', hint:'El ícono redondo'},
-  {id:'logo_texto',   nombre:'Logo texto completo', hint:'TOCKI & CO. en SVG'},
+  {id:'logo_isotipo', nombre:'Isotipo (círculo)',      hint:'El ícono redondo del logo'},
+  {id:'logo_texto',   nombre:'Logo texto completo',    hint:'TOCKI & CO. en SVG'},
 ];
 
 function renderSvgs() {
   document.getElementById('svgsGrid').innerHTML = SVG_DEFS.map(sv => {
-    const url = S.svgs[sv.id];
+    const nombre = S.svgs[sv.id] || '';
+    const previewUrl = nombre ? `logos/${nombre}` : '';
     return `<div class="slot-card">
       <div class="slot-preview" style="background:#f0f0f0;">
-        ${url ? `<img src="${url}" alt="${sv.nombre}" style="object-fit:contain;padding:16px;">` : `<div class="slot-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>Sin SVG</div>`}
+        ${previewUrl
+          ? `<img src="${previewUrl}" alt="${sv.nombre}" style="object-fit:contain;padding:16px;" onerror="this.parentElement.innerHTML='<div style=\'color:#999;font-size:12px;text-align:center;\'>Archivo no encontrado</div>'">`
+          : `<div class="slot-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>Sin SVG</div>`
+        }
       </div>
       <div class="slot-info">
         <div class="slot-name">${sv.nombre}</div>
         <div class="slot-page">${sv.hint}</div>
-        <div class="slot-actions">
-          <button class="btn-upload">Reemplazar<input type="file" accept=".svg" onchange="uploadSvg('${sv.id}',this)"></button>
-          ${url ? `<button class="btn-clear" onclick="clearSvg('${sv.id}')">Quitar</button>` : ''}
+        <div style="margin-top:10px;">
+          <label style="font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:6px;">Nombre del archivo</label>
+          <div style="display:flex;gap:6px;">
+            <input
+              type="text"
+              placeholder="ej: logo-isotipo.svg"
+              value="${nombre}"
+              id="svg-inp-${sv.id}"
+              style="flex:1;background:var(--darker);border:1px solid var(--border);border-radius:4px;color:var(--white);font-family:'Poppins',sans-serif;font-size:12px;padding:7px 10px;outline:none;"
+              onkeydown="if(event.key==='Enter')guardarSvg('${sv.id}')"
+            >
+            <button class="btn btn-primary" style="padding:7px 14px;font-size:12px;" onclick="guardarSvg('${sv.id}')">Guardar</button>
+            ${nombre ? `<button class="btn btn-danger" style="padding:7px 10px;font-size:12px;" onclick="clearSvg('${sv.id}')">✕</button>` : ''}
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">
+            📁 Subí el archivo a la carpeta <code style="background:rgba(255,255,255,0.08);padding:1px 6px;border-radius:3px;">logos/</code> en GitHub
+          </div>
         </div>
       </div>
     </div>`;
   }).join('');
 }
 
-function uploadSvg(id, input) {
-  const file = input.files[0]; if(!file) return;
-  const reader = new FileReader();
-  reader.onload = e => {
-    const blob = new Blob([e.target.result], {type:'image/svg+xml'});
-    S.svgs[id] = URL.createObjectURL(blob);
-    save(); renderSvgs(); renderStats(); toast('SVG actualizado');
-  };
-  reader.readAsText(file);
+function guardarSvg(id) {
+  const val = document.getElementById('svg-inp-'+id).value.trim();
+  if(val) S.svgs[id] = val; else delete S.svgs[id];
+  save(); renderSvgs(); renderStats();
+  toast(val ? 'Nombre guardado — subí el archivo a /logos/ en GitHub' : 'SVG quitado');
 }
 
 function clearSvg(id) { delete S.svgs[id]; save(); renderSvgs(); renderStats(); toast('SVG quitado'); }
@@ -799,8 +821,8 @@ function editTejido(id) {
   document.getElementById('t-desc').value = t.desc;
   document.getElementById('t-comp').value = t.comp;
   document.getElementById('t-usos').value = t.usos;
-  const prev = document.getElementById('t-preview');
-  if(t.img){ prev.src=t.img; prev.style.display='block'; } else prev.style.display='none';
+  document.getElementById('t-img').value = t.img || '';
+  previewFilename(t.img||'','t-preview-img');
   openModal('modalTejido');
 }
 
@@ -808,8 +830,7 @@ function saveTejido() {
   const nombre = document.getElementById('t-nombre').value.trim();
   if(!nombre){ toast('El nombre es obligatorio'); return; }
   const id = document.getElementById('t-id').value;
-  const prev = document.getElementById('t-preview');
-  const img = prev.style.display!=='none' ? prev.src : '';
+  const img = document.getElementById('t-img').value.trim();
   const data = { nombre, desc:document.getElementById('t-desc').value, comp:document.getElementById('t-comp').value, usos:document.getElementById('t-usos').value, img };
   if(id) { const i=S.tejidos.findIndex(x=>x.id===parseInt(id)); if(i>-1) S.tejidos[i]={...S.tejidos[i],...data}; }
   else { S.tejidos.push({id:S.nextId++,...data}); }
@@ -817,8 +838,8 @@ function saveTejido() {
   toast(id ? 'Tejido actualizado' : 'Tejido agregado');
   document.getElementById('modalTejidoTitle').textContent='Nuevo tejido';
   document.getElementById('t-id').value='';
-  ['t-nombre','t-desc','t-comp','t-usos'].forEach(f=>document.getElementById(f).value='');
-  document.getElementById('t-preview').style.display='none';
+  ['t-nombre','t-desc','t-comp','t-usos','t-img'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('t-preview-img').style.display='none';
 }
 
 function delTejido(id) {
@@ -905,8 +926,8 @@ function editArticulo(id) {
   document.getElementById('a-precio').value=a.precio||'';
   document.getElementById('a-desc').value=a.desc;
   document.getElementById('a-colores').value=a.colores||'';
-  const prev=document.getElementById('a-preview');
-  if(a.img){prev.src=a.img;prev.style.display='block';}else prev.style.display='none';
+  document.getElementById('a-img').value = a.img || '';
+  previewFilename(a.img||'','a-preview-img');
   openModal('modalArticulo');
 }
 
@@ -914,8 +935,7 @@ function saveArticulo() {
   const nombre=document.getElementById('a-nombre').value.trim();
   if(!nombre){toast('El nombre es obligatorio');return;}
   const id=document.getElementById('a-id').value;
-  const prev=document.getElementById('a-preview');
-  const img=prev.style.display!=='none'?prev.src:'';
+  const img = document.getElementById('a-img').value.trim();
   const data={
     codigo:document.getElementById('a-codigo').value,nombre,
     categoria:document.getElementById('a-cat').value,
@@ -931,7 +951,8 @@ function saveArticulo() {
   toast(id?'Artículo actualizado':'Artículo agregado');
   document.getElementById('a-id').value='';
   document.getElementById('modalArtTitle').textContent='Nuevo artículo';
-  document.getElementById('a-preview').style.display='none';
+  document.getElementById('a-img').value='';
+  document.getElementById('a-preview-img').style.display='none';
 }
 
 function delArticulo(id) {
@@ -971,14 +992,12 @@ function cambiarPassAdmin() {
 }
 
 // ── UTILS ──
-function previewImg(input, previewId) {
-  const file=input.files[0]; if(!file) return;
-  const reader=new FileReader();
-  reader.onload=e=>{
-    const img=document.getElementById(previewId);
-    img.src=e.target.result; img.style.display='block';
-  };
-  reader.readAsDataURL(file);
+function previewFilename(nombre, previewId) {
+  const img = document.getElementById(previewId);
+  if(!img) return;
+  if(!nombre) { img.style.display='none'; return; }
+  img.src = 'fotos/' + nombre;
+  img.style.display = 'block';
 }
 
 function toast(msg) {
