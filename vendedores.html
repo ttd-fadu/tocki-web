@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catálogo Vendedores — Tocki & Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --blue: #3D3DE8;
+    --blue-hover: #2b2bd4;
+    --dark: #1B1B1E;
+    --darker: #0d0d0d;
+    --mid: #2a2a2a;
+    --border: #2e2e2e;
+    --light: #f9f9f7;
+    --white: #ffffff;
+    --success: #22c55e;
+    --warn: #f59e0b;
+    --error: #ef4444;
+    --text-muted: rgba(255,255,255,0.4);
+  }
+
+  html, body { height: 100%; }
+  body { font-family: 'Poppins', sans-serif; background: var(--darker); color: var(--white); overflow-x: hidden; }
+
+  /* ── LOGIN ── */
+  #loginScreen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .login-box {
+    background: var(--mid); border: 1px solid var(--border);
+    border-radius: 10px; padding: 52px 48px;
+    width: 100%; max-width: 400px; text-align: center;
+  }
+
+  .login-logo { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 36px; }
+  .login-logo svg { width: 28px; height: 28px; }
+  .login-logo-text { font-size: 15px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; }
+
+  .login-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 32px; }
+
+  .login-input {
+    width: 100%; background: var(--darker); border: 1px solid var(--border);
+    border-radius: 6px; color: white; font-family: 'Poppins', sans-serif;
+    font-size: 14px; padding: 14px 16px; outline: none; margin-bottom: 12px;
+    transition: border-color 0.2s;
+  }
+  .login-input:focus { border-color: var(--blue); }
+
+  .login-btn {
+    width: 100%; background: var(--blue); color: white;
+    font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500;
+    padding: 14px; border: none; border-radius: 6px; cursor: pointer;
+    transition: background 0.2s;
+  }
+  .login-btn:hover { background: var(--blue-hover); }
+  .login-error { font-size: 12px; color: var(--error); margin-top: 10px; display: none; }
+
+  /* ── APP ── */
+  #vendApp { display: none; flex-direction: column; min-height: 100vh; }
+  #vendApp.show { display: flex; }
+
+  /* Topbar */
+  .topbar {
+    height: 60px; background: var(--mid); border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 28px; position: sticky; top: 0; z-index: 50;
+  }
+  .topbar-logo { display: flex; align-items: center; gap: 10px; }
+  .topbar-logo svg { width: 22px; height: 22px; }
+  .topbar-logo-text { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; }
+  .topbar-badge { font-size: 11px; background: rgba(61,61,232,0.25); color: #818cf8; padding: 3px 10px; border-radius: 20px; margin-left: 6px; font-weight: 500; }
+  .btn-logout { font-size: 12px; color: var(--text-muted); background: none; border: 1px solid var(--border); padding: 6px 14px; border-radius: 4px; cursor: pointer; font-family: 'Poppins', sans-serif; transition: color 0.2s; }
+  .btn-logout:hover { color: white; }
+
+  /* Toolbar: filtros + buscador */
+  .toolbar {
+    background: var(--mid); border-bottom: 1px solid var(--border);
+    padding: 16px 28px;
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+
+  .search-wrap { position: relative; flex: 1; min-width: 220px; max-width: 360px; }
+  .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; opacity: 0.4; }
+  .search-input {
+    width: 100%; background: var(--darker); border: 1px solid var(--border);
+    border-radius: 6px; color: white; font-family: 'Poppins', sans-serif;
+    font-size: 13px; padding: 9px 12px 9px 36px; outline: none; transition: border-color 0.2s;
+  }
+  .search-input:focus { border-color: var(--blue); }
+  .search-input::placeholder { color: var(--text-muted); }
+
+  .filter-label { font-size: 12px; color: var(--text-muted); white-space: nowrap; }
+
+  .filter-btn {
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500;
+    padding: 7px 14px; border-radius: 20px; border: 1px solid var(--border);
+    background: transparent; color: rgba(255,255,255,0.6); cursor: pointer;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .filter-btn:hover { color: white; border-color: rgba(255,255,255,0.3); }
+  .filter-btn.active { background: var(--blue); border-color: var(--blue); color: white; }
+
+  .estado-select {
+    background: var(--darker); border: 1px solid var(--border);
+    border-radius: 6px; color: rgba(255,255,255,0.7); font-family: 'Poppins', sans-serif;
+    font-size: 12px; padding: 8px 12px; outline: none; cursor: pointer;
+  }
+  .estado-select option { background: var(--mid); }
+
+  .results-count { font-size: 12px; color: var(--text-muted); margin-left: auto; }
+
+  /* Grid */
+  .catalog-body { flex: 1; padding: 28px; }
+
+  .catalog-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .art-card {
+    background: var(--mid); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden;
+    transition: border-color 0.2s, transform 0.2s;
+    cursor: default;
+  }
+  .art-card:hover { border-color: rgba(255,255,255,0.15); transform: translateY(-2px); }
+
+  .art-img-wrap {
+    width: 100%; height: 200px;
+    position: relative; overflow: hidden;
+    background: #1a1a1a;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .art-img-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .art-img-placeholder { color: var(--text-muted); font-size: 12px; text-align: center; }
+  .art-img-placeholder svg { width: 36px; height: 36px; opacity: 0.2; display: block; margin: 0 auto 8px; }
+
+  /* Estado badge sobre imagen */
+  .art-estado-badge {
+    position: absolute; top: 10px; left: 10px;
+    font-size: 10px; font-weight: 600; letter-spacing: 0.06em;
+    padding: 3px 10px; border-radius: 20px; text-transform: uppercase;
+  }
+  .badge-disponible { background: rgba(34,197,94,0.2); color: #4ade80; }
+  .badge-stock-limitado { background: rgba(245,158,11,0.2); color: #fbbf24; }
+  .badge-sin-stock { background: rgba(239,68,68,0.15); color: #f87171; }
+
+  /* Botón compartir sobre imagen */
+  .art-share-btn {
+    position: absolute; top: 10px; right: 10px;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s;
+  }
+  .art-card:hover .art-share-btn { opacity: 1; }
+  .art-share-btn:hover { background: rgba(61,61,232,0.7); }
+  .art-share-btn svg { width: 15px; height: 15px; }
+
+  .art-body { padding: 16px; }
+
+  .art-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 8px; }
+  .art-nombre { font-size: 14px; font-weight: 600; line-height: 1.3; }
+  .art-codigo { font-size: 11px; color: var(--text-muted); font-weight: 500; margin-top: 2px; }
+
+  .art-cat { display: inline-flex; align-items: center; font-size: 11px; font-weight: 500; color: #818cf8; background: rgba(61,61,232,0.15); padding: 2px 10px; border-radius: 20px; margin-bottom: 10px; }
+
+  .art-comp { font-size: 12px; color: var(--text-muted); line-height: 1.6; margin-bottom: 10px; }
+
+  .art-colores { font-size: 12px; color: rgba(255,255,255,0.5); margin-bottom: 14px; }
+  .art-colores span { color: rgba(255,255,255,0.7); font-weight: 500; }
+
+  .art-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.06); }
+
+  .art-precio { font-size: 15px; font-weight: 700; color: white; }
+  .art-precio-label { font-size: 10px; color: var(--text-muted); }
+
+  .btn-wa {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #25D366; color: white;
+    font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500;
+    padding: 8px 14px; border-radius: 6px; border: none; cursor: pointer;
+    text-decoration: none; transition: background 0.2s, transform 0.15s;
+  }
+  .btn-wa:hover { background: #1fba58; transform: translateY(-1px); }
+  .btn-wa svg { width: 14px; height: 14px; }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 80px 24px; color: var(--text-muted); }
+  .empty-state svg { width: 48px; height: 48px; opacity: 0.2; margin-bottom: 16px; }
+  .empty-state p { font-size: 14px; }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; right: 24px; background: var(--mid); border: 1px solid var(--border); border-radius: 8px; padding: 14px 20px; font-size: 13px; z-index: 999; display: flex; align-items: center; gap: 10px; transform: translateY(80px); opacity: 0; transition: all 0.3s; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--success); flex-shrink: 0; }
+
+  /* Modal detalle */
+  .modal-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: flex; align-items: center; justify-content: center; padding: 24px; backdrop-filter: blur(4px); opacity: 0; pointer-events: none; transition: opacity 0.25s; }
+  .modal-bg.open { opacity: 1; pointer-events: all; }
+  .modal-box { background: var(--mid); border: 1px solid var(--border); border-radius: 10px; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; position: relative; transform: translateY(16px); transition: transform 0.25s; display: grid; grid-template-columns: 1fr 1fr; }
+  .modal-bg.open .modal-box { transform: translateY(0); }
+
+  .modal-img-side { background: #1a1a1a; min-height: 320px; display: flex; align-items: center; justify-content: center; }
+  .modal-img-side img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  .modal-info-side { padding: 36px 32px; display: flex; flex-direction: column; justify-content: space-between; }
+  .modal-close { position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .modal-close:hover { background: rgba(255,255,255,0.2); }
+
+  .modal-cat { font-size: 11px; font-weight: 600; color: #818cf8; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 8px; }
+  .modal-title { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+  .modal-codigo { font-size: 12px; color: var(--text-muted); margin-bottom: 20px; }
+  .modal-divider { width: 40px; height: 2px; background: var(--blue); margin-bottom: 20px; }
+  .modal-desc { font-size: 13px; color: rgba(255,255,255,0.65); line-height: 1.8; margin-bottom: 20px; }
+
+  .modal-detail-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px; }
+  .modal-detail-val { font-size: 13px; color: rgba(255,255,255,0.85); margin-bottom: 16px; }
+
+  .modal-actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 8px; }
+
+  /* ── MOBILE ── */
+  @media (max-width: 768px) {
+
+    /* Login */
+    .login-box { padding: 40px 24px; margin: 16px; }
+
+    /* Topbar */
+    .topbar { padding: 0 16px; height: 52px; }
+    .topbar-logo-text { font-size: 12px; }
+    .topbar-badge { display: none; }
+    .btn-logout { padding: 5px 10px; font-size: 11px; }
+
+    /* Toolbar: scroll horizontal en filtros */
+    .toolbar { padding: 10px 16px; gap: 8px; flex-wrap: nowrap; overflow-x: auto; }
+    .toolbar::-webkit-scrollbar { display: none; }
+    .search-wrap { min-width: 160px; max-width: 200px; flex-shrink: 0; }
+    .filter-label { display: none; }
+    #filterBtns { display: flex; gap: 6px; flex-shrink: 0; flex-wrap: nowrap; }
+    .filter-btn { padding: 6px 12px; font-size: 11px; white-space: nowrap; }
+    .estado-select { font-size: 11px; padding: 6px 8px; flex-shrink: 0; }
+    .results-count { display: none; }
+
+    /* Grid: 2 columnas en mobile */
+    .catalog-body { padding: 12px; }
+    .catalog-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+
+    /* Cards más compactas */
+    .art-img-wrap { height: 150px; }
+    .art-body { padding: 10px; }
+    .art-nombre { font-size: 12px; }
+    .art-codigo { font-size: 10px; }
+    .art-cat { font-size: 10px; padding: 2px 8px; margin-bottom: 6px; }
+    .art-comp { font-size: 11px; margin-bottom: 6px; }
+    .art-colores { font-size: 11px; margin-bottom: 8px; }
+    .art-precio { font-size: 13px; }
+    .art-precio-label { font-size: 9px; }
+
+    /* Botón share siempre visible en mobile */
+    .art-share-btn { opacity: 1; width: 30px; height: 30px; }
+    .art-share-btn svg { width: 13px; height: 13px; }
+
+    /* Botón WA en card */
+    .btn-wa { font-size: 11px; padding: 6px 10px; }
+    .btn-wa svg { width: 12px; height: 12px; }
+
+    /* Modal: una columna */
+    .modal-box { grid-template-columns: 1fr; max-height: 95vh; border-radius: 12px 12px 0 0; align-self: flex-end; }
+    .modal-bg { align-items: flex-end; padding: 0; }
+    .modal-img-side { min-height: 220px; max-height: 220px; }
+    .modal-info-side { padding: 24px 20px 32px; }
+    .modal-title { font-size: 18px; }
+    .modal-actions { flex-direction: column; }
+    .modal-actions a, .modal-actions button { width: 100%; justify-content: center; }
+  }
+
+  /* Pantallas muy chicas: 1 columna */
+  @media (max-width: 380px) {
+    .catalog-grid { grid-template-columns: 1fr; }
+    .art-img-wrap { height: 200px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18.3226 36.8052C8.20106 36.8052 7.14468e-09 28.5669 4.51439e-07 18.4027C8.95796e-07 8.23695 8.20106 3.58477e-07 18.3226 8.00902e-07C28.4427 1.24327e-06 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="white"/>
+        <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#3D3DE8"/>
+      </svg>
+      <span class="login-logo-text">Tocki & Co.</span>
+    </div>
+    <h1 class="login-title">Catálogo de vendedores</h1>
+    <p class="login-sub">Área privada — ingresá tu contraseña</p>
+    <input class="login-input" type="password" id="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')doLogin()">
+    <button class="login-btn" onclick="doLogin()">Ingresar</button>
+    <p class="login-error" id="loginError">Contraseña incorrecta.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="vendApp">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-logo">
+      <svg viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px">
+        <path d="M18.3226 36.8052C8.20106 36.8052 7.14468e-09 28.5669 4.51439e-07 18.4027C8.95796e-07 8.23695 8.20106 3.58477e-07 18.3226 8.00902e-07C28.4427 1.24327e-06 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="white"/>
+        <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#3D3DE8"/>
+      </svg>
+      <span class="topbar-logo-text">Tocki & Co.</span>
+      <span class="topbar-badge">Vendedores</span>
+    </div>
+    <button class="btn-logout" onclick="doLogout()">Cerrar sesión</button>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <div class="search-wrap">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      <input class="search-input" type="text" placeholder="Buscar artículo, código..." id="searchInput" oninput="filtrar()">
+    </div>
+
+    <span class="filter-label">Categoría:</span>
+    <div id="filterBtns" style="display:flex;gap:8px;flex-wrap:wrap;">
+      <button class="filter-btn active" data-cat="" onclick="setCat(this)">Todos</button>
+      <button class="filter-btn" data-cat="Jersey" onclick="setCat(this)">Jersey</button>
+      <button class="filter-btn" data-cat="Sublimados" onclick="setCat(this)">Sublimados</button>
+      <button class="filter-btn" data-cat="Deportivo" onclick="setCat(this)">Deportivo</button>
+      <button class="filter-btn" data-cat="Térmicos" onclick="setCat(this)">Térmicos</button>
+      <button class="filter-btn" data-cat="Frisas" onclick="setCat(this)">Frisas</button>
+      <button class="filter-btn" data-cat="Otro" onclick="setCat(this)">Otro</button>
+    </div>
+
+    <select class="estado-select" id="estadoFilter" onchange="filtrar()">
+      <option value="">Todos los estados</option>
+      <option value="disponible">Disponible</option>
+      <option value="stock-limitado">Stock limitado</option>
+      <option value="sin-stock">Sin stock</option>
+    </select>
+
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+
+  <!-- Grid -->
+  <div class="catalog-body">
+    <div class="catalog-grid" id="catalogGrid"></div>
+  </div>
+
+</div>
+
+<!-- Modal detalle -->
+<div class="modal-bg" id="modalDetalle">
+  <div class="modal-box">
+    <button class="modal-close" onclick="cerrarModal()">✕</button>
+    <div class="modal-img-side" id="modalImgSide">
+      <div style="color:rgba(255,255,255,0.2);text-align:center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:40px;height:40px;margin:0 auto 8px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+        Sin imagen
+      </div>
+    </div>
+    <div class="modal-info-side">
+      <div>
+        <p class="modal-cat" id="m-cat"></p>
+        <h2 class="modal-title" id="m-nombre"></h2>
+        <p class="modal-codigo" id="m-codigo"></p>
+        <div class="modal-divider"></div>
+        <p class="modal-desc" id="m-desc"></p>
+        <p class="modal-detail-label">Composición</p>
+        <p class="modal-detail-val" id="m-comp"></p>
+        <p class="modal-detail-label">Colores disponibles</p>
+        <p class="modal-detail-val" id="m-colores"></p>
+      </div>
+      <div class="modal-actions">
+        <a href="#" class="btn-wa" id="m-wa-btn" target="_blank">
+          <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          Consultar
+        </a>
+        <button class="btn-wa" style="background:#1B1B1E;border:1px solid rgba(255,255,255,0.15);" onclick="compartirWA()" id="m-share-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width:14px;height:14px;"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+          Compartir por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">
+  <div class="toast-dot"></div>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+const VEND_PASS_KEY = 'tocki_vend_pass';
+const DATA_KEY      = 'tocki_admin_data';
+const DEFAULT_VEND  = 'vendedores2024';
+const WA_NUMBER     = '5491166586254';
+
+// Artículos demo — se muestran si no hay datos en localStorage (Firebase no configurado)
+const DEMO_ARTICULOS = [
+  { id:1, codigo:'TK-001', nombre:'Jersey Premium', categoria:'Jersey', estado:'disponible', comp:'80% Algodón / 20% Elastano', desc:'Tejido de punto liviano y versátil, ideal para prendas de uso diario. Excelente caída y confort al tacto.', coloresDisp:'Negro, Blanco, Azul Klein, Rojo, Fucsia', precio:'2800', img:'' },
+  { id:2, codigo:'TK-002', nombre:'Jersey con LYCRA®', categoria:'Jersey', estado:'disponible', comp:'75% Algodón / 20% Modal / 5% LYCRA®', desc:'Comodidad del jersey con la elasticidad de LYCRA®. El más usado en moda femenina y básicos urbanos.', coloresDisp:'Negro, Blanco, Bordo, Oliva, Celeste', precio:'3200', img:'' },
+  { id:3, codigo:'TK-003', nombre:'Sublimado Deportivo', categoria:'Sublimados', estado:'disponible', comp:'100% Poliéster', desc:'Alta densidad para procesos de sublimación. Colores vivos y duraderos. Ideal para camisetas y uniformes.', coloresDisp:'Blanco (base para sublimar)', precio:'2400', img:'' },
+  { id:4, codigo:'TK-004', nombre:'Poliéster con LYCRA®', categoria:'Deportivo', estado:'disponible', comp:'85% Poliéster / 15% LYCRA®', desc:'Resistencia y elasticidad superiores. Fibra LYCRA® certificada. Indumentaria técnica y deportiva.', coloresDisp:'Negro, Azul Eléctrico, Rojo, Verde Lima', precio:'3600', img:'' },
+  { id:5, codigo:'TK-005', nombre:'Frisa Premium', categoria:'Frisas', estado:'disponible', comp:'60% Algodón / 40% Poliéster', desc:'Interior afelpado para máximo confort térmico. Muy usado en ropa de descanso y urbana.', coloresDisp:'Negro, Gris, Bordo, Azul', precio:'3100', img:'' },
+  { id:6, codigo:'TK-006', nombre:'Remería 180g', categoria:'Remería', estado:'disponible', comp:'100% Algodón peinado', desc:'Tejido clásico para remeras y básicos. Gramaje equilibrado, tacto suave y buena estabilidad dimensional.', coloresDisp:'Carta completa disponible', precio:'2200', img:'' },
+  { id:7, codigo:'TK-007', nombre:'Térmico Interior', categoria:'Térmicos', estado:'stock-limitado', comp:'50% Poliéster / 50% Acrílico', desc:'Alta retención de calor con peso mínimo. Ideal para ropa de abrigo y prendas técnicas de frío.', coloresDisp:'Negro, Blanco, Gris Perla', precio:'4100', img:'' },
+  { id:8, codigo:'TK-008', nombre:'Spiders Vaplex', categoria:'Deportivo', estado:'disponible', comp:'80% Poliamida / 20% Elastano', desc:'Ultraliviano y de alta elasticidad. Ideal para ropa de baño, running y aplicaciones de alto estiramiento.', coloresDisp:'Negro, Blanco, Fucsia, Azul Eléctrico', precio:'4800', img:'' },
+  { id:9, codigo:'TK-009', nombre:'Rústico Fantasía', categoria:'Fantasía', estado:'sin-stock', comp:'60% Algodón / 40% Viscosa', desc:'Tejido con textura pronunciada y carácter. Aporta volumen y personalidad a colecciones de autor.', coloresDisp:'Consultar disponibilidad', precio:'', img:'' },
+  { id:10, codigo:'TK-010', nombre:'Jersey Elastizado', categoria:'Jersey', estado:'disponible', comp:'70% Algodón / 25% Poliéster / 5% Elastano', desc:'Mayor elasticidad transversal y longitudinal. Ideal para ropa deportiva y ajustada.', coloresDisp:'Negro, Blanco, Azul, Verde Lima, Amarillo', precio:'2950', img:'' },
+];
+
+let articulos = [];
+let catActiva = '';
+let articuloActivo = null;
+
+// ── AUTH ──
+function doLogin() {
+  const pass   = document.getElementById('loginPass').value;
+  const stored = localStorage.getItem(VEND_PASS_KEY) || DEFAULT_VEND;
+  if (pass === stored) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('vendApp').classList.add('show');
+    cargarDatos();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+    setTimeout(() => document.getElementById('loginError').style.display = 'none', 2500);
+  }
+}
+
+function doLogout() {
+  document.getElementById('vendApp').classList.remove('show');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPass').value = '';
+}
+
+// ── DATOS ──
+function cargarDatos() {
+  try {
+    const saved = localStorage.getItem(DATA_KEY);
+    if (saved) {
+      const data = JSON.parse(saved);
+      // Usar datos del admin si existen y tienen artículos; si no, usar demo
+      articulos = (data.articulos && data.articulos.length > 0) ? data.articulos : DEMO_ARTICULOS;
+    } else {
+      // Sin Firebase/admin configurado: mostrar artículos demo
+      articulos = DEMO_ARTICULOS;
+    }
+  } catch(e) {
+    articulos = DEMO_ARTICULOS;
+  }
+
+  // Rebuild category filters
+  const cats = [...new Set(articulos.map(a => a.categoria).filter(Boolean))];
+  const container = document.getElementById('filterBtns');
+  container.innerHTML = `<button class="filter-btn active" data-cat="" onclick="setCat(this)">Todos</button>`;
+  cats.forEach(c => {
+    container.innerHTML += `<button class="filter-btn" data-cat="${c}" onclick="setCat(this)">${c}</button>`;
+  });
+
+  filtrar();
+}
+
+// ── FILTROS ──
+function setCat(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  catActiva = btn.dataset.cat;
+  filtrar();
+}
+
+function filtrar() {
+  const q      = document.getElementById('searchInput').value.toLowerCase().trim();
+  const estado = document.getElementById('estadoFilter').value;
+
+  const filtrados = articulos.filter(a => {
+    const matchCat    = !catActiva || a.categoria === catActiva;
+    const matchEstado = !estado || a.estado === estado;
+    const matchQ      = !q ||
+      a.nombre.toLowerCase().includes(q) ||
+      a.codigo.toLowerCase().includes(q) ||
+      (a.comp || '').toLowerCase().includes(q) ||
+      (a.categoria || '').toLowerCase().includes(q);
+    return matchCat && matchEstado && matchQ;
+  });
+
+  renderGrid(filtrados);
+  document.getElementById('resultsCount').textContent =
+    filtrados.length + ' artículo' + (filtrados.length !== 1 ? 's' : '');
+}
+
+// ── RENDER ──
+function renderGrid(lista) {
+  const grid = document.getElementById('catalogGrid');
+
+  if (lista.length === 0) {
+    grid.innerHTML = `
+      <div class="empty-state" style="grid-column:1/-1;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg>
+        <p>No se encontraron artículos</p>
+      </div>`;
+    return;
+  }
+
+  const estadoClass = { 'disponible':'badge-disponible', 'stock-limitado':'badge-stock-limitado', 'sin-stock':'badge-sin-stock' };
+  const estadoLabel = { 'disponible':'Disponible', 'stock-limitado':'Stock limitado', 'sin-stock':'Sin stock' };
+
+  grid.innerHTML = lista.map(a => `
+    <div class="art-card" onclick="abrirDetalle(${a.id})">
+      <div class="art-img-wrap">
+        ${a.img
+          ? `<img src="${a.img}" alt="${a.nombre}" loading="lazy">`
+          : `<div class="art-img-placeholder">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+               Sin imagen
+             </div>`
+        }
+        <span class="art-estado-badge ${estadoClass[a.estado] || ''}">${estadoLabel[a.estado] || a.estado}</span>
+        <button class="art-share-btn" onclick="event.stopPropagation();compartirWACard(${a.id})" title="Compartir por WhatsApp">
+          <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+      </div>
+      <div class="art-body">
+        <div class="art-header">
+          <div>
+            <p class="art-nombre">${a.nombre}</p>
+            <p class="art-codigo">${a.codigo}</p>
+          </div>
+        </div>
+        ${a.categoria ? `<span class="art-cat">${a.categoria}</span>` : ''}
+        <p class="art-comp">${a.comp || ''}</p>
+        ${a.coloresDisp ? `<p class="art-colores">Colores: <span>${a.coloresDisp}</span></p>` : ''}
+        <div class="art-footer">
+          <div>
+            ${a.precio ? `<p class="art-precio-label">Precio ref.</p><p class="art-precio">$${Number(a.precio).toLocaleString('es-AR')}</p>` : ''}
+          </div>
+          <a href="${buildWALink(a)}" target="_blank" class="btn-wa" onclick="event.stopPropagation()">
+            <svg viewBox="0 0 24 24" fill="white" style="width:14px;height:14px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            Consultar
+          </a>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── WA ──
+function buildWALink(a) {
+  const msg = `Hola, me interesa el artículo *${a.nombre}* (${a.codigo})${a.categoria ? ' — ' + a.categoria : ''}. ¿Podés darme más información?`;
+  return `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+}
+
+function buildWAShareMsg(a) {
+  let msg = `*${a.nombre}* — Tocki & Co.\n`;
+  if (a.codigo)    msg += `Código: ${a.codigo}\n`;
+  if (a.categoria) msg += `Categoría: ${a.categoria}\n`;
+  if (a.comp)      msg += `Composición: ${a.comp}\n`;
+  if (a.coloresDisp) msg += `Colores: ${a.coloresDisp}\n`;
+  if (a.precio)    msg += `Precio ref.: $${Number(a.precio).toLocaleString('es-AR')}\n`;
+  msg += `\n¿Querés más info? Escribinos a wa.me/${WA_NUMBER}`;
+  return msg;
+}
+
+function compartirWACard(id) {
+  const a = articulos.find(x => x.id === id);
+  if (!a) return;
+  const url = `https://wa.me/?text=${encodeURIComponent(buildWAShareMsg(a))}`;
+  window.open(url, '_blank');
+}
+
+function compartirWA() {
+  if (!articuloActivo) return;
+  const url = `https://wa.me/?text=${encodeURIComponent(buildWAShareMsg(articuloActivo))}`;
+  window.open(url, '_blank');
+}
+
+// ── MODAL DETALLE ──
+function abrirDetalle(id) {
+  const a = articulos.find(x => x.id === id);
+  if (!a) return;
+  articuloActivo = a;
+
+  document.getElementById('m-cat').textContent    = a.categoria || '';
+  document.getElementById('m-nombre').textContent = a.nombre;
+  document.getElementById('m-codigo').textContent = a.codigo;
+  document.getElementById('m-desc').textContent   = a.desc || '';
+  document.getElementById('m-comp').textContent   = a.comp || '—';
+  document.getElementById('m-colores').textContent= a.coloresDisp || '—';
+  document.getElementById('m-wa-btn').href        = buildWALink(a);
+
+  const imgSide = document.getElementById('modalImgSide');
+  if (a.img) {
+    imgSide.innerHTML = `<img src="${a.img}" alt="${a.nombre}">`;
+  } else {
+    imgSide.innerHTML = `<div style="color:rgba(255,255,255,0.2);text-align:center;padding:24px;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:40px;height:40px;margin:0 auto 8px;display:block;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      Sin imagen
+    </div>`;
+  }
+
+  document.getElementById('modalDetalle').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function cerrarModal() {
+  document.getElementById('modalDetalle').classList.remove('open');
+  document.body.style.overflow = '';
+  articuloActivo = null;
+}
+
+document.getElementById('modalDetalle').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalDetalle')) cerrarModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrarModal(); });
+
+// ── TOAST ──
+function showToast(msg) {
+  document.getElementById('toastMsg').textContent = msg;
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>

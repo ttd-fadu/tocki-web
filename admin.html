@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin — Tocki & Co.</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --blue:#3D3DE8; --blue-h:#2b2bd4;
+  --dark:#1B1B1E; --darker:#0d0d0d;
+  --mid:#222226; --border:#303035;
+  --white:#fff; --muted:rgba(255,255,255,0.4);
+  --success:#22c55e; --danger:#ef4444; --warn:#f59e0b;
+}
+html,body { height:100%; font-family:'Poppins',sans-serif; background:var(--darker); color:var(--white); overflow-x:hidden; }
+
+/* LOGIN */
+#loginScreen { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:16px; }
+.login-box { background:var(--mid); border:1px solid var(--border); border-radius:8px; padding:48px 40px; width:100%; max-width:380px; text-align:center; }
+.login-logo { display:flex; align-items:center; justify-content:center; gap:10px; margin-bottom:36px; }
+.login-logo-text { font-size:13px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; }
+.login-title { font-size:20px; font-weight:700; margin-bottom:6px; }
+.login-sub { font-size:13px; color:var(--muted); margin-bottom:32px; }
+.login-input {
+  width:100%; background:var(--darker); border:1px solid var(--border);
+  border-radius:6px; color:var(--white); font-family:'Poppins',sans-serif;
+  font-size:14px; padding:13px 16px; outline:none; margin-bottom:12px;
+  transition:border-color 0.2s;
+}
+.login-input:focus { border-color:var(--blue); }
+.login-input::placeholder { color:rgba(255,255,255,0.2); }
+.login-btn {
+  width:100%; background:var(--blue); color:var(--white);
+  font-family:'Poppins',sans-serif; font-size:14px; font-weight:500;
+  padding:13px; border:none; border-radius:6px; cursor:pointer;
+  transition:background 0.2s;
+}
+.login-btn:hover { background:var(--blue-h); }
+.login-err { font-size:12px; color:var(--danger); margin-top:10px; display:none; }
+
+/* APP */
+#app { display:none; min-height:100vh; }
+#app.show { display:flex; flex-direction:column; }
+
+/* TOPBAR */
+.topbar {
+  height:56px; background:var(--mid); border-bottom:1px solid var(--border);
+  display:flex; align-items:center; justify-content:space-between;
+  padding:0 24px; position:sticky; top:0; z-index:100; flex-shrink:0;
+}
+.topbar-left { display:flex; align-items:center; gap:10px; }
+.topbar-logo-text { font-size:13px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; }
+.topbar-badge { font-size:10px; background:var(--blue); color:var(--white); padding:2px 8px; border-radius:20px; font-weight:600; letter-spacing:0.04em; }
+.topbar-right { display:flex; align-items:center; gap:12px; }
+.btn-logout { background:none; border:1px solid var(--border); color:var(--muted); font-family:'Poppins',sans-serif; font-size:12px; padding:6px 14px; border-radius:4px; cursor:pointer; transition:color 0.2s; }
+.btn-logout:hover { color:var(--white); }
+
+/* HAMBURGER */
+.btn-hamburger { display:none; flex-direction:column; gap:5px; background:none; border:none; cursor:pointer; padding:4px; }
+.btn-hamburger span { display:block; width:20px; height:2px; background:var(--white); border-radius:2px; transition:0.3s; }
+.btn-hamburger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.btn-hamburger.open span:nth-child(2) { opacity:0; }
+.btn-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+/* BODY */
+.app-body { display:flex; flex:1; overflow:hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width:220px; flex-shrink:0; background:var(--mid);
+  border-right:1px solid var(--border);
+  display:flex; flex-direction:column;
+  overflow-y:auto; height:calc(100vh - 56px);
+  position:sticky; top:56px;
+}
+.sidebar-section { padding:20px 0 8px; }
+.sidebar-label { font-size:10px; font-weight:600; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.25); padding:0 20px 8px; }
+.nav-item {
+  display:flex; align-items:center; gap:10px;
+  padding:10px 20px; font-size:13px; color:var(--muted);
+  cursor:pointer; background:none; border:none; width:100%; text-align:left;
+  transition:color 0.2s, background 0.2s; border-left:2px solid transparent;
+  font-family:'Poppins',sans-serif;
+}
+.nav-item:hover { color:var(--white); background:rgba(255,255,255,0.04); }
+.nav-item.active { color:var(--white); background:rgba(61,61,232,0.1); border-left-color:var(--blue); }
+.nav-item svg { width:15px; height:15px; flex-shrink:0; }
+
+/* MAIN */
+.main { flex:1; overflow-y:auto; padding:36px 40px; }
+
+/* PANELS */
+.panel { display:none; }
+.panel.active { display:block; }
+.page-title { font-size:22px; font-weight:700; margin-bottom:6px; }
+.page-sub { font-size:13px; color:var(--muted); margin-bottom:32px; }
+
+/* STATS */
+.stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:32px; }
+.stat-card { background:var(--mid); border:1px solid var(--border); border-radius:6px; padding:20px; }
+.stat-val { font-size:28px; font-weight:700; margin-bottom:4px; }
+.stat-lbl { font-size:12px; color:var(--muted); }
+
+/* CARDS */
+.card { background:var(--mid); border:1px solid var(--border); border-radius:6px; padding:24px; margin-bottom:16px; }
+.card-title { font-size:13px; font-weight:600; margin-bottom:16px; color:var(--muted); letter-spacing:0.06em; text-transform:uppercase; }
+
+/* SLOTS */
+.slots-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.slot-card { background:var(--darker); border:1px solid var(--border); border-radius:6px; overflow:hidden; }
+.slot-preview { height:140px; display:flex; align-items:center; justify-content:center; background:rgba(255,255,255,0.03); overflow:hidden; position:relative; }
+.slot-preview img, .slot-preview video { width:100%; height:100%; object-fit:cover; display:block; }
+.slot-preview-empty { font-size:12px; color:rgba(255,255,255,0.2); text-align:center; }
+.slot-preview-empty svg { width:28px; height:28px; opacity:0.3; display:block; margin:0 auto 6px; }
+.slot-info { padding:14px; }
+.slot-name { font-size:12px; font-weight:600; margin-bottom:3px; }
+.slot-page { font-size:11px; color:var(--muted); margin-bottom:10px; }
+.slot-actions { display:flex; gap:8px; }
+.btn-upload {
+  flex:1; background:var(--blue); color:var(--white);
+  font-family:'Poppins',sans-serif; font-size:11px; font-weight:500;
+  padding:7px 12px; border-radius:20px; border:none; cursor:pointer;
+  position:relative; overflow:hidden; text-align:center; transition:background 0.2s;
+}
+.btn-upload:hover { background:var(--blue-h); }
+.btn-upload input { position:absolute; inset:0; opacity:0; cursor:pointer; font-size:0; }
+.btn-clear { flex:1; background:rgba(255,255,255,0.06); color:var(--muted); font-family:'Poppins',sans-serif; font-size:11px; padding:7px 12px; border-radius:20px; border:none; cursor:pointer; transition:0.2s; }
+.btn-clear:hover { color:var(--danger); background:rgba(239,68,68,0.1); }
+
+/* TABLE */
+.tbl-wrap { overflow-x:auto; border-radius:6px; border:1px solid var(--border); }
+table { width:100%; border-collapse:collapse; font-size:13px; }
+th { text-align:left; padding:10px 16px; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); border-bottom:1px solid var(--border); white-space:nowrap; }
+td { padding:12px 16px; border-bottom:1px solid rgba(255,255,255,0.04); vertical-align:middle; }
+tr:last-child td { border-bottom:none; }
+tr:hover td { background:rgba(255,255,255,0.02); }
+.td-thumb { width:40px; height:40px; border-radius:4px; object-fit:cover; background:var(--border); display:block; }
+.badge { display:inline-block; font-size:10px; font-weight:600; letter-spacing:0.05em; text-transform:uppercase; padding:3px 9px; border-radius:20px; }
+.badge-green { background:rgba(34,197,94,0.15); color:#4ade80; }
+.badge-blue { background:rgba(61,61,232,0.2); color:#818cf8; }
+.badge-warn { background:rgba(245,158,11,0.15); color:#fbbf24; }
+.badge-red { background:rgba(239,68,68,0.15); color:#f87171; }
+
+/* BUTTONS */
+.btn { display:inline-flex; align-items:center; gap:6px; font-family:'Poppins',sans-serif; font-size:12px; font-weight:500; padding:7px 16px; border-radius:6px; border:none; cursor:pointer; transition:0.2s; }
+.btn-primary { background:var(--blue); color:var(--white); }
+.btn-primary:hover { background:var(--blue-h); }
+.btn-ghost { background:rgba(255,255,255,0.06); color:rgba(255,255,255,0.7); }
+.btn-ghost:hover { color:var(--white); background:rgba(255,255,255,0.1); }
+.btn-danger { background:rgba(239,68,68,0.1); color:var(--danger); border:1px solid rgba(239,68,68,0.25); }
+.btn-danger:hover { background:rgba(239,68,68,0.2); }
+.row-actions { display:flex; gap:6px; }
+
+/* FORM */
+.form-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:16px; }
+.form-full { grid-column:1/-1; }
+.field { display:flex; flex-direction:column; gap:6px; }
+.field label { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--muted); }
+.field input, .field select, .field textarea {
+  background:var(--darker); border:1px solid var(--border);
+  color:var(--white); font-family:'Poppins',sans-serif; font-size:13px;
+  padding:10px 12px; border-radius:4px; outline:none; transition:border-color 0.2s;
+}
+.field input:focus, .field select:focus, .field textarea:focus { border-color:var(--blue); }
+.field input::placeholder, .field textarea::placeholder { color:rgba(255,255,255,0.2); }
+.field select option { background:var(--mid); }
+.field textarea { resize:vertical; min-height:72px; }
+
+/* UPLOAD ZONE */
+.upload-zone {
+  border:2px dashed var(--border); border-radius:6px;
+  padding:32px 24px; text-align:center; cursor:pointer;
+  transition:0.2s; position:relative;
+}
+.upload-zone:hover { border-color:var(--blue); background:rgba(61,61,232,0.05); }
+.upload-zone input { position:absolute; inset:0; opacity:0; cursor:pointer; }
+.upload-zone svg { width:28px; height:28px; opacity:0.3; margin-bottom:10px; }
+.upload-zone p { font-size:13px; color:var(--muted); }
+.upload-zone span { font-size:11px; color:rgba(255,255,255,0.2); }
+.preview-img { width:100%; height:140px; object-fit:cover; border-radius:4px; margin-top:10px; display:none; }
+
+/* PUBLISH */
+.preview-page-btn.active { background:rgba(61,61,232,0.15); color:var(--white); border-color:rgba(61,61,232,0.4); }
+#btn-desktop.active, #btn-mobile.active { background:rgba(255,255,255,0.12); color:var(--white); }
+
+/* PASS CARD */
+.pass-card { max-width:440px; }
+.pass-hint { font-size:12px; color:var(--muted); margin-bottom:20px; padding:12px 14px; background:rgba(255,255,255,0.04); border-radius:4px; line-height:1.6; }
+
+/* MODAL */
+.overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:500; display:flex; align-items:center; justify-content:center; padding:16px; opacity:0; pointer-events:none; transition:opacity 0.25s; backdrop-filter:blur(4px); }
+.overlay.open { opacity:1; pointer-events:all; }
+.modal { background:var(--mid); border:1px solid var(--border); border-radius:8px; width:100%; max-width:540px; max-height:90vh; overflow-y:auto; padding:36px; position:relative; transform:translateY(16px); transition:transform 0.25s; }
+.overlay.open .modal { transform:translateY(0); }
+.modal-close { position:absolute; top:14px; right:14px; background:none; border:none; color:var(--muted); font-size:18px; cursor:pointer; transition:color 0.2s; }
+.modal-close:hover { color:var(--white); }
+.modal-title { font-size:16px; font-weight:700; margin-bottom:24px; }
+.modal-actions { display:flex; justify-content:flex-end; gap:8px; margin-top:24px; }
+
+/* COLOR PREVIEW */
+.color-swatch { width:36px; height:36px; border-radius:4px; border:1px solid var(--border); flex-shrink:0; }
+.color-row { display:flex; align-items:center; gap:12px; padding:10px 14px; background:var(--darker); border:1px solid var(--border); border-radius:6px; margin-bottom:8px; }
+.color-info { flex:1; }
+.color-name { font-size:13px; font-weight:500; }
+.color-code { font-size:11px; color:var(--muted); }
+
+/* TOAST */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(16px); background:var(--mid); border:1px solid var(--border); color:var(--white); font-size:13px; padding:11px 22px; border-radius:50px; opacity:0; transition:0.3s; pointer-events:none; z-index:999; white-space:nowrap; }
+.toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* SPIN */
+@keyframes spin { from { transform:rotate(0deg); } to { transform:rotate(360deg); } }
+
+/* MOBILE */
+@media (max-width:768px) {
+  .btn-hamburger { display:flex; }
+  .btn-logout { display:none; }
+  .sidebar { display:none; position:fixed; top:56px; left:0; right:0; bottom:0; z-index:90; height:auto; width:100%; }
+  .sidebar.open { display:flex; }
+  .app-body { flex-direction:column; }
+  .main { padding:20px 16px; }
+  .stats-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+  .stat-val { font-size:22px; }
+  .slots-grid { grid-template-columns:1fr; }
+  .form-grid { grid-template-columns:1fr; }
+  .modal { padding:24px 20px; }
+  .login-box { padding:36px 24px; }
+  table { min-width:520px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">
+      <svg width="26" height="26" viewBox="0 0 37 37" fill="none">
+        <path d="M18.3226 36.8052C8.20106 36.8052 0 28.5669 0 18.4027C0 8.23695 8.20106 0 18.3226 0C28.4427 0 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="white"/>
+        <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#3D3DE8"/>
+      </svg>
+      <span class="login-logo-text">Tocki & Co.</span>
+    </div>
+    <h1 class="login-title">Panel admin</h1>
+    <p class="login-sub">Ingresá tu contraseña para continuar</p>
+    <input class="login-input" type="password" id="loginPass" placeholder="Contraseña" onkeydown="if(event.key==='Enter')login()">
+    <button class="login-btn" onclick="login()">Ingresar</button>
+    <p class="login-err" id="loginErr">Contraseña incorrecta.</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <button class="btn-hamburger" id="hamburger" onclick="toggleSidebar()">
+        <span></span><span></span><span></span>
+      </button>
+      <svg width="20" height="20" viewBox="0 0 37 37" fill="none">
+        <path d="M18.3226 36.8052C8.20106 36.8052 0 28.5669 0 18.4027C0 8.23695 8.20106 0 18.3226 0C28.4427 0 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="white"/>
+        <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#3D3DE8"/>
+      </svg>
+      <span class="topbar-logo-text">Tocki & Co.</span>
+      <span class="topbar-badge">Admin</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-logout" onclick="logout()">Cerrar sesión</button>
+    </div>
+  </div>
+
+  <div class="app-body">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-section">
+        <p class="sidebar-label">General</p>
+        <button class="nav-item active" onclick="goTo('dashboard',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          Dashboard
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-label">Sitio público</p>
+        <button class="nav-item" onclick="goTo('medios',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+          Fotos y videos
+        </button>
+        <button class="nav-item" onclick="goTo('svgs',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          SVGs / Logos
+        </button>
+        <button class="nav-item" onclick="goTo('tejidos',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          Catálogo público
+        </button>
+        <button class="nav-item" onclick="goTo('colores',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 010 20"/></svg>
+          Carta de colores
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-label">Vendedores</p>
+        <button class="nav-item" onclick="goTo('articulos',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 3H8a2 2 0 00-2 2v2h12V5a2 2 0 00-2-2z"/></svg>
+          Artículos
+        </button>
+        <button class="nav-item" onclick="goTo('acceso',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          Acceso vendedores
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-label">Publicación</p>
+        <button class="nav-item" onclick="goTo('publicar',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+          Vista previa y publicar
+        </button>
+      </div>
+      <div class="sidebar-section">
+        <p class="sidebar-label">Cuenta</p>
+        <button class="nav-item" onclick="goTo('config',this)">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          Configuración
+        </button>
+        <button class="nav-item" onclick="logout()" style="margin-top:8px;">
+          <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Cerrar sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="main">
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <h1 class="page-title">Dashboard</h1>
+        <p class="page-sub">Resumen del sitio.</p>
+        <div class="stats-grid">
+          <div class="stat-card"><div class="stat-val" id="st-tejidos">0</div><div class="stat-lbl">Tejidos</div></div>
+          <div class="stat-card"><div class="stat-val" id="st-colores">0</div><div class="stat-lbl">Colores</div></div>
+          <div class="stat-card"><div class="stat-val" id="st-articulos">0</div><div class="stat-lbl">Artículos vendedores</div></div>
+          <div class="stat-card"><div class="stat-val" id="st-medios">0</div><div class="stat-lbl">Archivos subidos</div></div>
+        </div>
+        <div class="card">
+          <div class="card-title">Accesos rápidos</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;">
+            <button class="btn btn-primary" onclick="goTo('medios',null)">+ Subir foto/video</button>
+            <button class="btn btn-ghost" onclick="goTo('tejidos',null)">Editar catálogo</button>
+            <button class="btn btn-ghost" onclick="goTo('articulos',null)">Gestionar artículos</button>
+            <button class="btn btn-ghost" onclick="goTo('acceso',null)">Acceso vendedores</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOTOS Y VIDEOS -->
+      <div class="panel" id="panel-medios">
+        <h1 class="page-title">Fotos y videos</h1>
+        <p class="page-sub">Asigná una foto o video a cada sección del sitio. Formatos: JPG, PNG, WebP, MP4, MOV.</p>
+        <div class="slots-grid" id="slotsGrid"></div>
+      </div>
+
+      <!-- SVGs -->
+      <div class="panel" id="panel-svgs">
+        <h1 class="page-title">SVGs / Logos</h1>
+        <p class="page-sub">Reemplazá los archivos SVG del sitio.</p>
+        <div class="slots-grid" id="svgsGrid"></div>
+      </div>
+
+      <!-- TEJIDOS -->
+      <div class="panel" id="panel-tejidos">
+        <h1 class="page-title">Catálogo público</h1>
+        <p class="page-sub">Tejidos que aparecen en la página Catálogo Vivo.</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <span style="font-size:13px;color:var(--muted)" id="tejidos-count"></span>
+          <button class="btn btn-primary" onclick="openModal('modalTejido')">+ Nuevo tejido</button>
+        </div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>Imagen</th><th>Nombre</th><th>Composición</th><th>Usos</th><th></th></tr></thead>
+          <tbody id="tejidosBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- COLORES -->
+      <div class="panel" id="panel-colores">
+        <h1 class="page-title">Carta de colores</h1>
+        <p class="page-sub">Colores que aparecen en la carta del catálogo.</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <span style="font-size:13px;color:var(--muted)" id="colores-count"></span>
+          <button class="btn btn-primary" onclick="openModal('modalColor')">+ Nuevo color</button>
+        </div>
+        <div id="coloresList"></div>
+      </div>
+
+      <!-- ARTÍCULOS -->
+      <div class="panel" id="panel-articulos">
+        <h1 class="page-title">Artículos de vendedores</h1>
+        <p class="page-sub">Artículos que aparecen en la página privada de vendedores.</p>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+          <span style="font-size:13px;color:var(--muted)" id="arts-count"></span>
+          <button class="btn btn-primary" onclick="openModal('modalArticulo')">+ Nuevo artículo</button>
+        </div>
+        <div class="tbl-wrap">
+          <table><thead><tr><th>Img</th><th>Código</th><th>Nombre</th><th>Categoría</th><th>Estado</th><th></th></tr></thead>
+          <tbody id="artsBody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ACCESO VENDEDORES -->
+      <div class="panel" id="panel-acceso">
+        <h1 class="page-title">Acceso de vendedores</h1>
+        <p class="page-sub">Contraseña para la página privada de vendedores.</p>
+        <div class="card pass-card">
+          <div class="card-title">Contraseña vendedores</div>
+          <div class="pass-hint">Contraseña actual: <strong id="vendPassShow" style="color:var(--white);">vendedores2024</strong></div>
+          <div class="field" style="margin-bottom:14px;"><label>Nueva contraseña</label><input type="password" id="vendPassNew" placeholder="Nueva contraseña"></div>
+          <div class="field" style="margin-bottom:20px;"><label>Confirmar</label><input type="password" id="vendPassConfirm" placeholder="Repetí la contraseña"></div>
+          <button class="btn btn-primary" onclick="cambiarPassVend()">Guardar</button>
+        </div>
+        <div class="card pass-card" style="margin-top:16px;">
+          <div class="card-title">Link para vendedores</div>
+          <div style="background:var(--darker);border:1px solid var(--border);border-radius:4px;padding:12px 14px;font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:12px;word-break:break-all;">
+            https://tocki.com.ar/vendedores.html
+          </div>
+          <button class="btn btn-ghost" onclick="navigator.clipboard.writeText('https://tocki.com.ar/vendedores.html');toast('Link copiado')">Copiar link</button>
+        </div>
+      </div>
+
+      <!-- PUBLICAR -->
+      <div class="panel" id="panel-publicar">
+        <h1 class="page-title">Vista previa y publicar</h1>
+        <p class="page-sub">Revisá cómo se ve el sitio antes de publicar.</p>
+
+        <!-- Última actualización + botón publicar -->
+        <div style="background:var(--mid);border:1px solid var(--border);border-radius:6px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;">
+          <div>
+            <div style="font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;">Última publicación</div>
+            <div style="font-size:14px;font-weight:500;color:var(--white);" id="ultimaPublicacion">Nunca publicado</div>
+          </div>
+          <button class="btn btn-primary" onclick="publicar()" id="btnPublicar" style="font-size:13px;padding:10px 24px;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+            Publicar sitio
+          </button>
+        </div>
+
+        <!-- Selector de página para vista previa -->
+        <div style="display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;">
+          <button class="btn btn-ghost preview-page-btn active" data-page="index.html" onclick="cambiarPreview(this)">Inicio</button>
+          <button class="btn btn-ghost preview-page-btn" data-page="fabrica.html" onclick="cambiarPreview(this)">La fábrica</button>
+          <button class="btn btn-ghost preview-page-btn" data-page="catalogo.html" onclick="cambiarPreview(this)">Catálogo</button>
+          <button class="btn btn-ghost preview-page-btn" data-page="contacto.html" onclick="cambiarPreview(this)">Contacto</button>
+          <button class="btn btn-ghost preview-page-btn" data-page="vendedores.html" onclick="cambiarPreview(this)">Vendedores</button>
+        </div>
+
+        <!-- Toggle desktop / mobile -->
+        <div style="display:flex;gap:8px;margin-bottom:12px;align-items:center;">
+          <button class="btn btn-ghost" id="btn-desktop" onclick="setDevice('desktop')" style="display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+            Desktop
+          </button>
+          <button class="btn btn-ghost" id="btn-mobile" onclick="setDevice('mobile')" style="display:flex;align-items:center;gap:6px;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="7" y="2" width="10" height="20" rx="2"/><circle cx="12" cy="18" r="1"/></svg>
+            Mobile
+          </button>
+          <span style="font-size:11px;color:var(--muted);margin-left:4px;" id="previewUrl"></span>
+        </div>
+
+        <!-- iframe preview -->
+        <div style="background:#1a1a1a;border:1px solid var(--border);border-radius:6px;overflow:hidden;display:flex;justify-content:center;padding:16px;" id="previewContainer">
+          <iframe id="previewFrame"
+            src="index.html"
+            style="width:100%;height:680px;border:none;border-radius:4px;background:white;transition:width 0.3s;"
+            title="Vista previa del sitio">
+          </iframe>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-top:10px;">La vista previa muestra la versión local. El sitio publicado puede tardar unos minutos en actualizarse.</p>
+      </div>
+
+      <!-- CONFIG -->
+      <div class="panel" id="panel-config">
+        <h1 class="page-title">Configuración</h1>
+        <p class="page-sub">Ajustes del panel de administración.</p>
+        <div class="card pass-card">
+          <div class="card-title">Cambiar contraseña admin</div>
+          <div class="field" style="margin-bottom:14px;"><label>Contraseña actual</label><input type="password" id="adminPassCurrent" placeholder="••••••••"></div>
+          <div class="field" style="margin-bottom:20px;"><label>Nueva contraseña</label><input type="password" id="adminPassNew" placeholder="Mínimo 6 caracteres"></div>
+          <button class="btn btn-primary" onclick="cambiarPassAdmin()">Guardar</button>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODAL TEJIDO -->
+<div class="overlay" id="modalTejido" onclick="if(event.target===this)closeModal('modalTejido')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalTejido')">✕</button>
+    <h2 class="modal-title" id="modalTejidoTitle">Nuevo tejido</h2>
+    <input type="hidden" id="t-id">
+    <div class="form-grid">
+      <div class="field form-full"><label>Nombre</label><input id="t-nombre" placeholder="Ej: Jersey con LYCRA"></div>
+      <div class="field form-full"><label>Descripción</label><textarea id="t-desc" placeholder="Descripción del tejido..."></textarea></div>
+      <div class="field"><label>Composición</label><input id="t-comp" placeholder="80% Algodón / 20% Elastano"></div>
+      <div class="field"><label>Usos sugeridos</label><input id="t-usos" placeholder="Remeras, vestidos..."></div>
+      <div class="field form-full">
+        <label>Imagen</label>
+        <div class="upload-zone" onclick="document.getElementById('t-img-inp').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Hacé click para subir imagen</p>
+          <span>JPG, PNG, WebP — máx. 5MB</span>
+          <input type="file" id="t-img-inp" accept="image/*" onchange="previewImg(this,'t-preview')">
+        </div>
+        <img id="t-preview" class="preview-img" alt="">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalTejido')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveTejido()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL COLOR -->
+<div class="overlay" id="modalColor" onclick="if(event.target===this)closeModal('modalColor')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalColor')">✕</button>
+    <h2 class="modal-title" id="modalColorTitle">Nuevo color</h2>
+    <input type="hidden" id="c-id">
+    <div class="form-grid">
+      <div class="field"><label>Código (ej: T-021)</label><input id="c-codigo" placeholder="T-021"></div>
+      <div class="field"><label>Nombre</label><input id="c-nombre" placeholder="Ej: Terracota"></div>
+      <div class="field"><label>Hex</label><input id="c-hex" placeholder="#FF5733" oninput="document.getElementById('c-swatch').style.background=this.value"></div>
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div id="c-swatch" style="width:52px;height:52px;border-radius:6px;border:1px solid var(--border);transition:background 0.2s;"></div>
+        <span style="font-size:12px;color:var(--muted);">Vista previa</span>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalColor')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveColor()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL ARTÍCULO -->
+<div class="overlay" id="modalArticulo" onclick="if(event.target===this)closeModal('modalArticulo')">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('modalArticulo')">✕</button>
+    <h2 class="modal-title" id="modalArtTitle">Nuevo artículo</h2>
+    <input type="hidden" id="a-id">
+    <div class="form-grid">
+      <div class="field"><label>Código</label><input id="a-codigo" placeholder="TK-001"></div>
+      <div class="field"><label>Nombre</label><input id="a-nombre" placeholder="Jersey Premium"></div>
+      <div class="field"><label>Categoría</label>
+        <select id="a-cat">
+          <option value="">Seleccionar...</option>
+          <option>Jersey</option><option>Sublimados</option><option>Rústico</option>
+          <option>Poliéster con LYCRA</option><option>Fantasía</option><option>Térmicos</option>
+          <option>Jersey con LYCRA</option><option>Remería</option><option>Deportivo</option>
+          <option>Frisas</option><option>Spiders/Vaplex</option><option>Otro</option>
+        </select>
+      </div>
+      <div class="field"><label>Estado</label>
+        <select id="a-estado">
+          <option value="disponible">Disponible</option>
+          <option value="stock-limitado">Stock limitado</option>
+          <option value="sin-stock">Sin stock</option>
+        </select>
+      </div>
+      <div class="field"><label>Composición</label><input id="a-comp" placeholder="80% Algodón / 20% Elastano"></div>
+      <div class="field"><label>Precio referencia</label><input id="a-precio" type="number" placeholder="0"></div>
+      <div class="field form-full"><label>Descripción</label><textarea id="a-desc" placeholder="Descripción para vendedores..."></textarea></div>
+      <div class="field form-full"><label>Colores disponibles</label><input id="a-colores" placeholder="Negro, Blanco, Azul..."></div>
+      <div class="field form-full">
+        <label>Imagen</label>
+        <div class="upload-zone" onclick="document.getElementById('a-img-inp').click()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <p>Hacé click para subir imagen</p>
+          <span>JPG, PNG, WebP — máx. 5MB</span>
+          <input type="file" id="a-img-inp" accept="image/*" onchange="previewImg(this,'a-preview')">
+        </div>
+        <img id="a-preview" class="preview-img" alt="">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal('modalArticulo')">Cancelar</button>
+      <button class="btn btn-primary" onclick="saveArticulo()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toastEl"></div>
+
+<script>
+// ── STATE ──
+const ADMIN_KEY = 'tocki_admin_pass';
+const VEND_KEY  = 'tocki_vend_pass';
+const DATA_KEY  = 'tocki_data';
+
+let S = {
+  tejidos: [
+    {id:1,nombre:'Jersey',desc:'Tejido de punto liviano y versátil.',comp:'80% Algodón / 20% Elastano',usos:'Remeras, vestidos, básicos.',img:''},
+    {id:2,nombre:'Jersey Elastizado',desc:'Mayor elasticidad.',comp:'70% Algodón / 25% Poliéster / 5% Elastano',usos:'Ropa deportiva.',img:''},
+    {id:3,nombre:'Sublimados',desc:'Para sublimación.',comp:'100% Poliéster',usos:'Camisetas, uniformes.',img:''},
+    {id:4,nombre:'Rústico',desc:'Textura pronunciada.',comp:'60% Algodón / 40% Viscosa',usos:'Colecciones de autor.',img:''},
+    {id:5,nombre:'Poliéster con LYCRA',desc:'Alta elasticidad.',comp:'85% Poliéster / 15% LYCRA®',usos:'Ropa técnica.',img:''},
+    {id:6,nombre:'Fantasía',desc:'Fibras combinadas.',comp:'Variable',usos:'Moda de diseñador.',img:''},
+    {id:7,nombre:'Térmicos',desc:'Alta retención de calor.',comp:'50% Poliéster / 50% Acrílico',usos:'Ropa de abrigo.',img:''},
+    {id:8,nombre:'Jersey con LYCRA',desc:'Comodidad + elasticidad.',comp:'75% Algodón / 20% Modal / 5% LYCRA®',usos:'Moda femenina.',img:''},
+    {id:9,nombre:'Remería',desc:'Clásico para remeras.',comp:'100% Algodón peinado',usos:'Remeras, uniformes.',img:''},
+    {id:10,nombre:'Deportivo',desc:'Alto rendimiento.',comp:'88% Poliéster / 12% Elastano',usos:'Running, gym.',img:''},
+    {id:11,nombre:'Frisas',desc:'Interior afelpado.',comp:'60% Algodón / 40% Poliéster',usos:'Buzos, descanso.',img:''},
+    {id:12,nombre:'Spiders/Vaplex',desc:'Ultraliviano.',comp:'80% Poliamida / 20% Elastano',usos:'Baño, danza.',img:''},
+  ],
+  colores: [
+    {id:1,codigo:'T-001',nombre:'Fucsia',hex:'#FF0090'},{id:2,codigo:'T-002',nombre:'Blanco',hex:'#FFFFFF'},
+    {id:3,codigo:'T-003',nombre:'Púrpura',hex:'#800080'},{id:4,codigo:'T-004',nombre:'Amarillo',hex:'#FFD700'},
+    {id:5,codigo:'T-005',nombre:'Verde Lima',hex:'#AAFF66'},{id:6,codigo:'T-006',nombre:'Gris Perla',hex:'#B0BEC5'},
+    {id:7,codigo:'T-007',nombre:'Amarillo Neón',hex:'#DDFF00'},{id:8,codigo:'T-008',nombre:'Azul Klein',hex:'#002FA7'},
+    {id:9,codigo:'T-009',nombre:'Bordo Oscuro',hex:'#2A0A14'},{id:10,codigo:'T-010',nombre:'Verde Oliva',hex:'#4A4530'},
+    {id:11,codigo:'T-011',nombre:'Violeta',hex:'#6A0DAD'},{id:12,codigo:'T-012',nombre:'Teal',hex:'#008080'},
+    {id:13,codigo:'T-013',nombre:'Malva',hex:'#CC44CC'},{id:14,codigo:'T-014',nombre:'Negro',hex:'#222222'},
+    {id:15,codigo:'T-015',nombre:'Celeste',hex:'#3A8EE6'},{id:16,codigo:'T-016',nombre:'Azul Eléctrico',hex:'#4A3FD4'},
+    {id:17,codigo:'T-017',nombre:'Ciruela',hex:'#780050'},{id:18,codigo:'T-018',nombre:'Negro Profundo',hex:'#181818'},
+    {id:19,codigo:'T-019',nombre:'Rojo',hex:'#FF2200'},{id:20,codigo:'T-020',nombre:'Verde Esmeralda',hex:'#00DD55'},
+  ],
+  articulos: [],
+  slots: {},
+  svgs: {},
+  nextId: 200,
+};
+
+function save() { try { localStorage.setItem(DATA_KEY, JSON.stringify(S)); } catch(e){} }
+function load() {
+  try {
+    const d = localStorage.getItem(DATA_KEY);
+    if(d) S = {...S, ...JSON.parse(d)};
+  } catch(e){}
+}
+
+// ── AUTH ──
+function login() {
+  const pass = document.getElementById('loginPass').value;
+  const stored = localStorage.getItem(ADMIN_KEY) || 'tocki2024';
+  if(pass === stored) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').classList.add('show');
+    load(); renderAll();
+  } else {
+    const el = document.getElementById('loginErr');
+    el.style.display = 'block';
+    setTimeout(() => el.style.display = 'none', 2500);
+  }
+}
+
+function logout() {
+  document.getElementById('app').classList.remove('show');
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('loginPass').value = '';
+}
+
+document.getElementById('loginPass').addEventListener('keydown', e => { if(e.key==='Enter') login(); });
+
+// ── NAV ──
+function goTo(panel, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-'+panel).classList.add('active');
+  if(btn) btn.classList.add('active');
+  // close sidebar on mobile
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('hamburger').classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('hamburger').classList.toggle('open');
+}
+
+// ── RENDER ALL ──
+function renderAll() { renderStats(); renderSlots(); renderSvgs(); renderTejidos(); renderColores(); renderArticulos(); updateVendPass(); }
+
+function renderStats() {
+  document.getElementById('st-tejidos').textContent = S.tejidos.length;
+  document.getElementById('st-colores').textContent = S.colores.length;
+  document.getElementById('st-articulos').textContent = S.articulos.length;
+  document.getElementById('st-medios').textContent = Object.values(S.slots).filter(Boolean).length + Object.values(S.svgs).filter(Boolean).length;
+}
+
+// ── SLOTS ──
+const SLOT_DEFS = [
+  {id:'home_produccion', nombre:'Foto de producción', pagina:'Home'},
+  {id:'fabrica_gente',   nombre:'Gente trabajando',   pagina:'La fábrica'},
+  {id:'fabrica_tejeduria',nombre:'Tejeduría',          pagina:'La fábrica'},
+  {id:'home_hero',       nombre:'Fondo hero',          pagina:'Home (opcional)'},
+];
+
+function renderSlots() {
+  document.getElementById('slotsGrid').innerHTML = SLOT_DEFS.map(sl => {
+    const m = S.slots[sl.id];
+    return `<div class="slot-card">
+      <div class="slot-preview">
+        ${m ? (m.type==='video' ? `<video src="${m.url}" autoplay muted loop playsinline></video>` : `<img src="${m.url}" alt="">`)
+             : `<div class="slot-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>Sin contenido</div>`}
+      </div>
+      <div class="slot-info">
+        <div class="slot-name">${sl.nombre}</div>
+        <div class="slot-page">${sl.pagina}</div>
+        <div class="slot-actions">
+          <button class="btn-upload">Subir<input type="file" accept="image/*,video/*" onchange="uploadSlot('${sl.id}',this)"></button>
+          ${m ? `<button class="btn-clear" onclick="clearSlot('${sl.id}')">Quitar</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function uploadSlot(id, input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    S.slots[id] = { url: e.target.result, type: file.type };
+    save(); renderSlots(); renderStats(); toast('Archivo guardado');
+  };
+  reader.readAsDataURL(file);
+}
+
+function clearSlot(id) { delete S.slots[id]; save(); renderSlots(); renderStats(); toast('Archivo quitado'); }
+
+// ── SVGs ──
+const SVG_DEFS = [
+  {id:'logo_isotipo', nombre:'Isotipo (círculo)', hint:'El ícono redondo'},
+  {id:'logo_texto',   nombre:'Logo texto completo', hint:'TOCKI & CO. en SVG'},
+];
+
+function renderSvgs() {
+  document.getElementById('svgsGrid').innerHTML = SVG_DEFS.map(sv => {
+    const url = S.svgs[sv.id];
+    return `<div class="slot-card">
+      <div class="slot-preview" style="background:#f0f0f0;">
+        ${url ? `<img src="${url}" alt="${sv.nombre}" style="object-fit:contain;padding:16px;">` : `<div class="slot-preview-empty"><svg viewBox="0 0 24 24" fill="none" stroke="#999" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/></svg>Sin SVG</div>`}
+      </div>
+      <div class="slot-info">
+        <div class="slot-name">${sv.nombre}</div>
+        <div class="slot-page">${sv.hint}</div>
+        <div class="slot-actions">
+          <button class="btn-upload">Reemplazar<input type="file" accept=".svg" onchange="uploadSvg('${sv.id}',this)"></button>
+          ${url ? `<button class="btn-clear" onclick="clearSvg('${sv.id}')">Quitar</button>` : ''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function uploadSvg(id, input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const blob = new Blob([e.target.result], {type:'image/svg+xml'});
+    S.svgs[id] = URL.createObjectURL(blob);
+    save(); renderSvgs(); renderStats(); toast('SVG actualizado');
+  };
+  reader.readAsText(file);
+}
+
+function clearSvg(id) { delete S.svgs[id]; save(); renderSvgs(); renderStats(); toast('SVG quitado'); }
+
+// ── TEJIDOS ──
+function renderTejidos() {
+  document.getElementById('tejidos-count').textContent = S.tejidos.length + ' tejidos';
+  document.getElementById('tejidosBody').innerHTML = S.tejidos.map(t => `
+    <tr>
+      <td>${t.img ? `<img class="td-thumb" src="${t.img}">` : '<div class="td-thumb"></div>'}</td>
+      <td><strong>${t.nombre}</strong></td>
+      <td style="color:var(--muted);font-size:12px;">${t.comp}</td>
+      <td style="color:var(--muted);font-size:12px;max-width:160px;">${t.usos}</td>
+      <td><div class="row-actions">
+        <button class="btn btn-ghost" onclick="editTejido(${t.id})">Editar</button>
+        <button class="btn btn-danger" onclick="delTejido(${t.id})">Eliminar</button>
+      </div></td>
+    </tr>`).join('');
+}
+
+function openModal(id) { document.getElementById(id).classList.add('open'); document.body.style.overflow='hidden'; }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); document.body.style.overflow=''; }
+document.addEventListener('keydown', e => { if(e.key==='Escape') document.querySelectorAll('.overlay.open').forEach(o => closeModal(o.id)); });
+
+function editTejido(id) {
+  const t = S.tejidos.find(x=>x.id===id); if(!t) return;
+  document.getElementById('modalTejidoTitle').textContent = 'Editar tejido';
+  document.getElementById('t-id').value = id;
+  document.getElementById('t-nombre').value = t.nombre;
+  document.getElementById('t-desc').value = t.desc;
+  document.getElementById('t-comp').value = t.comp;
+  document.getElementById('t-usos').value = t.usos;
+  const prev = document.getElementById('t-preview');
+  if(t.img){ prev.src=t.img; prev.style.display='block'; } else prev.style.display='none';
+  openModal('modalTejido');
+}
+
+function saveTejido() {
+  const nombre = document.getElementById('t-nombre').value.trim();
+  if(!nombre){ toast('El nombre es obligatorio'); return; }
+  const id = document.getElementById('t-id').value;
+  const prev = document.getElementById('t-preview');
+  const img = prev.style.display!=='none' ? prev.src : '';
+  const data = { nombre, desc:document.getElementById('t-desc').value, comp:document.getElementById('t-comp').value, usos:document.getElementById('t-usos').value, img };
+  if(id) { const i=S.tejidos.findIndex(x=>x.id===parseInt(id)); if(i>-1) S.tejidos[i]={...S.tejidos[i],...data}; }
+  else { S.tejidos.push({id:S.nextId++,...data}); }
+  save(); closeModal('modalTejido'); renderTejidos(); renderStats();
+  toast(id ? 'Tejido actualizado' : 'Tejido agregado');
+  document.getElementById('modalTejidoTitle').textContent='Nuevo tejido';
+  document.getElementById('t-id').value='';
+  ['t-nombre','t-desc','t-comp','t-usos'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('t-preview').style.display='none';
+}
+
+function delTejido(id) {
+  if(!confirm('¿Eliminar este tejido?')) return;
+  S.tejidos = S.tejidos.filter(x=>x.id!==id);
+  save(); renderTejidos(); renderStats(); toast('Tejido eliminado');
+}
+
+// ── COLORES ──
+function renderColores() {
+  document.getElementById('colores-count').textContent = S.colores.length + ' colores';
+  document.getElementById('coloresList').innerHTML = S.colores.map(c => `
+    <div class="color-row">
+      <div class="color-swatch" style="background:${c.hex}"></div>
+      <div class="color-info"><div class="color-name">${c.nombre}</div><div class="color-code">${c.codigo} · ${c.hex}</div></div>
+      <div class="row-actions">
+        <button class="btn btn-ghost" onclick="editColor(${c.id})">Editar</button>
+        <button class="btn btn-danger" onclick="delColor(${c.id})">Eliminar</button>
+      </div>
+    </div>`).join('');
+}
+
+function editColor(id) {
+  const c = S.colores.find(x=>x.id===id); if(!c) return;
+  document.getElementById('modalColorTitle').textContent='Editar color';
+  document.getElementById('c-id').value=id;
+  document.getElementById('c-codigo').value=c.codigo;
+  document.getElementById('c-nombre').value=c.nombre;
+  document.getElementById('c-hex').value=c.hex;
+  document.getElementById('c-swatch').style.background=c.hex;
+  openModal('modalColor');
+}
+
+function saveColor() {
+  const nombre=document.getElementById('c-nombre').value.trim();
+  const hex=document.getElementById('c-hex').value.trim();
+  if(!nombre||!hex){ toast('Nombre y hex son obligatorios'); return; }
+  const id=document.getElementById('c-id').value;
+  const data={codigo:document.getElementById('c-codigo').value,nombre,hex};
+  if(id){ const i=S.colores.findIndex(x=>x.id===parseInt(id)); if(i>-1) S.colores[i]={...S.colores[i],...data}; }
+  else { S.colores.push({id:S.nextId++,...data}); }
+  save(); closeModal('modalColor'); renderColores(); renderStats();
+  toast(id?'Color actualizado':'Color agregado');
+  ['c-id','c-codigo','c-nombre','c-hex'].forEach(f=>document.getElementById(f).value='');
+  document.getElementById('c-swatch').style.background='transparent';
+  document.getElementById('modalColorTitle').textContent='Nuevo color';
+}
+
+function delColor(id) {
+  if(!confirm('¿Eliminar este color?')) return;
+  S.colores=S.colores.filter(x=>x.id!==id);
+  save(); renderColores(); renderStats(); toast('Color eliminado');
+}
+
+// ── ARTÍCULOS ──
+function renderArticulos() {
+  document.getElementById('arts-count').textContent = S.articulos.length + ' artículos';
+  const estadoBadge = {disponible:'badge-green','stock-limitado':'badge-warn','sin-stock':'badge-red'};
+  document.getElementById('artsBody').innerHTML = S.articulos.length===0
+    ? '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px;">Sin artículos todavía.</td></tr>'
+    : S.articulos.map(a=>`
+      <tr>
+        <td>${a.img?`<img class="td-thumb" src="${a.img}">`:'<div class="td-thumb"></div>'}</td>
+        <td style="font-size:12px;color:var(--muted);">${a.codigo}</td>
+        <td><strong>${a.nombre}</strong></td>
+        <td><span class="badge badge-blue">${a.categoria}</span></td>
+        <td><span class="badge ${estadoBadge[a.estado]||''}">${a.estado}</span></td>
+        <td><div class="row-actions">
+          <button class="btn btn-ghost" onclick="editArticulo(${a.id})">Editar</button>
+          <button class="btn btn-danger" onclick="delArticulo(${a.id})">Eliminar</button>
+        </div></td>
+      </tr>`).join('');
+}
+
+function editArticulo(id) {
+  const a=S.articulos.find(x=>x.id===id); if(!a) return;
+  document.getElementById('modalArtTitle').textContent='Editar artículo';
+  document.getElementById('a-id').value=id;
+  document.getElementById('a-codigo').value=a.codigo;
+  document.getElementById('a-nombre').value=a.nombre;
+  document.getElementById('a-cat').value=a.categoria;
+  document.getElementById('a-estado').value=a.estado;
+  document.getElementById('a-comp').value=a.comp;
+  document.getElementById('a-precio').value=a.precio||'';
+  document.getElementById('a-desc').value=a.desc;
+  document.getElementById('a-colores').value=a.colores||'';
+  const prev=document.getElementById('a-preview');
+  if(a.img){prev.src=a.img;prev.style.display='block';}else prev.style.display='none';
+  openModal('modalArticulo');
+}
+
+function saveArticulo() {
+  const nombre=document.getElementById('a-nombre').value.trim();
+  if(!nombre){toast('El nombre es obligatorio');return;}
+  const id=document.getElementById('a-id').value;
+  const prev=document.getElementById('a-preview');
+  const img=prev.style.display!=='none'?prev.src:'';
+  const data={
+    codigo:document.getElementById('a-codigo').value,nombre,
+    categoria:document.getElementById('a-cat').value,
+    estado:document.getElementById('a-estado').value,
+    comp:document.getElementById('a-comp').value,
+    precio:document.getElementById('a-precio').value,
+    desc:document.getElementById('a-desc').value,
+    colores:document.getElementById('a-colores').value, img
+  };
+  if(id){const i=S.articulos.findIndex(x=>x.id===parseInt(id));if(i>-1)S.articulos[i]={...S.articulos[i],...data};}
+  else{S.articulos.push({id:S.nextId++,...data});}
+  save();closeModal('modalArticulo');renderArticulos();renderStats();
+  toast(id?'Artículo actualizado':'Artículo agregado');
+  document.getElementById('a-id').value='';
+  document.getElementById('modalArtTitle').textContent='Nuevo artículo';
+  document.getElementById('a-preview').style.display='none';
+}
+
+function delArticulo(id) {
+  if(!confirm('¿Eliminar este artículo?'))return;
+  S.articulos=S.articulos.filter(x=>x.id!==id);
+  save();renderArticulos();renderStats();toast('Artículo eliminado');
+}
+
+// ── CONTRASEÑAS ──
+function updateVendPass() {
+  const p=localStorage.getItem(VEND_KEY)||'vendedores2024';
+  document.getElementById('vendPassShow').textContent=p;
+}
+
+function cambiarPassVend() {
+  const np=document.getElementById('vendPassNew').value;
+  const cf=document.getElementById('vendPassConfirm').value;
+  if(np!==cf){toast('Las contraseñas no coinciden');return;}
+  if(np.length<4){toast('Mínimo 4 caracteres');return;}
+  localStorage.setItem(VEND_KEY,np);
+  document.getElementById('vendPassShow').textContent=np;
+  document.getElementById('vendPassNew').value='';
+  document.getElementById('vendPassConfirm').value='';
+  toast('Contraseña de vendedores actualizada');
+}
+
+function cambiarPassAdmin() {
+  const cur=document.getElementById('adminPassCurrent').value;
+  const stored=localStorage.getItem(ADMIN_KEY)||'tocki2024';
+  if(cur!==stored){toast('Contraseña actual incorrecta');return;}
+  const np=document.getElementById('adminPassNew').value;
+  if(np.length<6){toast('Mínimo 6 caracteres');return;}
+  localStorage.setItem(ADMIN_KEY,np);
+  document.getElementById('adminPassCurrent').value='';
+  document.getElementById('adminPassNew').value='';
+  toast('Contraseña de admin actualizada');
+}
+
+// ── UTILS ──
+function previewImg(input, previewId) {
+  const file=input.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const img=document.getElementById(previewId);
+    img.src=e.target.result; img.style.display='block';
+  };
+  reader.readAsDataURL(file);
+}
+
+function toast(msg) {
+  const el=document.getElementById('toastEl');
+  el.textContent=msg; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'),2800);
+}
+
+// ── PUBLICAR ──
+function publicar() {
+  const btn = document.getElementById('btnPublicar');
+  btn.disabled = true;
+  btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="margin-right:4px;animation:spin 1s linear infinite"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>Publicando...';
+
+  // Simular proceso de publicación (cuando esté conectado a Firebase deploy)
+  setTimeout(() => {
+    const ahora = new Date();
+    const fecha = ahora.toLocaleDateString('es-AR', { day:'2-digit', month:'long', year:'numeric' });
+    const hora  = ahora.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+    const texto = `${fecha} a las ${hora}`;
+    localStorage.setItem('tocki_ultima_publicacion', texto);
+    document.getElementById('ultimaPublicacion').textContent = texto;
+    btn.disabled = false;
+    btn.innerHTML = '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24" style="margin-right:4px;"><path d="M12 19V5M5 12l7-7 7 7"/></svg>Publicar sitio';
+    toast('✓ Sitio publicado correctamente');
+  }, 2200);
+}
+
+function cargarUltimaPublicacion() {
+  const p = localStorage.getItem('tocki_ultima_publicacion');
+  if(p) document.getElementById('ultimaPublicacion').textContent = p;
+}
+
+// ── VISTA PREVIA ──
+let currentDevice = 'desktop';
+
+function cambiarPreview(btn) {
+  document.querySelectorAll('.preview-page-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const page = btn.dataset.page;
+  document.getElementById('previewFrame').src = page;
+  document.getElementById('previewUrl').textContent = page;
+}
+
+function setDevice(device) {
+  currentDevice = device;
+  const frame = document.getElementById('previewFrame');
+  document.getElementById('btn-desktop').classList.toggle('active', device==='desktop');
+  document.getElementById('btn-mobile').classList.toggle('active', device==='mobile');
+  frame.style.width = device === 'mobile' ? '390px' : '100%';
+  frame.style.height = device === 'mobile' ? '780px' : '680px';
+}
+
+// Cargar última publicación al iniciar
+const origRenderAll = renderAll;
+renderAll = function() { origRenderAll(); cargarUltimaPublicacion(); }
+</script>
+</body>
+</html>
