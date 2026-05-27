@@ -16,7 +16,7 @@
     --light: #f9f9f7;
     --white: #ffffff;
     --nav-height: 68px;
-  } 
+  }
 
   html { scroll-behavior: smooth; }
   body { font-family: 'Poppins', sans-serif; background: var(--light); color: var(--dark); overflow-x: hidden; }
@@ -247,10 +247,12 @@
 <!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">
-    <svg viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18.3226 36.8052C8.20106 36.8052 7.14468e-09 28.5669 4.51439e-07 18.4027C8.95796e-07 8.23695 8.20106 3.58477e-07 18.3226 8.00902e-07C28.4427 1.24327e-06 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="#1B1B1E"/>
-      <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#FBFBFB"/>
-    </svg>
+    <span id="nav-logo-icon">
+      <svg viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18.3226 36.8052C8.20106 36.8052 7.14468e-09 28.5669 4.51439e-07 18.4027C8.95796e-07 8.23695 8.20106 3.58477e-07 18.3226 8.00902e-07C28.4427 1.24327e-06 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="#1B1B1E"/>
+        <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#FBFBFB"/>
+      </svg>
+    </span>
     <span class="nav-logo-text">Tocki & Co.</span>
   </a>
   <ul class="nav-links">
@@ -281,7 +283,7 @@
 <!-- BRAND SPLIT -->
 <div class="brand-section">
   <div class="brand-blue">
-    <span class="brand-blue-text">TOCKI &amp; CO.</span>
+    <span class="brand-blue-text" id="brand-logo-texto">TOCKI &amp; CO.</span>
   </div>
   <div class="brand-info fade-up">
     <p class="brand-info-title">Industria argentina textil en movimiento.</p>
@@ -293,7 +295,7 @@
 
 <!-- FOTO -->
 <div class="photo-strip">
-  <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=85" alt="Producción textil Tocki">
+  <img id="img-home-produccion" src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=1600&q=85" alt="Producción textil Tocki">
 </div>
 
 <!-- FEATURES -->
@@ -359,14 +361,45 @@
 </a>
 
 <script>
-  function toggleMenu() {
-    const btn  = document.getElementById('hamburger');
-    const menu = document.getElementById('mobileMenu');
-    btn.classList.toggle('open');
-    menu.classList.toggle('open');
+  // ── LEER DATOS DEL ADMIN ──
+  function aplicarDatosAdmin() {
+    try {
+      const d = localStorage.getItem('tocki_data');
+      if(!d) return;
+      const S = JSON.parse(d);
+
+      // Foto de producción (franja)
+      if(S.slots && S.slots.home_produccion) {
+        const img = document.getElementById('img-home-produccion');
+        if(img) img.src = 'fotos/' + S.slots.home_produccion;
+      }
+
+      // Logo isotipo en nav
+      if(S.svgs && S.svgs.logo_isotipo) {
+        const wrap = document.getElementById('nav-logo-icon');
+        if(wrap) wrap.innerHTML = `<img src="logos/${S.svgs.logo_isotipo}" alt="Tocki logo" style="width:24px;height:24px;object-fit:contain;">`;
+      }
+
+      // Logo texto en bloque azul
+      if(S.svgs && S.svgs.logo_texto) {
+        const brand = document.getElementById('brand-logo-texto');
+        if(brand) {
+          brand.innerHTML = '';
+          const img = document.createElement('img');
+          img.src = 'logos/' + S.svgs.logo_texto;
+          img.alt = 'TOCKI & CO.';
+          img.style.cssText = 'max-height:60px;max-width:100%;object-fit:contain;filter:brightness(0) invert(1);';
+          brand.appendChild(img);
+        }
+      }
+    } catch(e) {}
   }
 
-  // Cerrar menú al tocar un link
+  // ── HAMBURGER ──
+  function toggleMenu() {
+    document.getElementById('hamburger').classList.toggle('open');
+    document.getElementById('mobileMenu').classList.toggle('open');
+  }
   document.querySelectorAll('.nav-mobile-menu a').forEach(a => {
     a.addEventListener('click', () => {
       document.getElementById('hamburger').classList.remove('open');
@@ -374,11 +407,14 @@
     });
   });
 
+  // ── FADE-UP ──
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
   window.addEventListener('load', () => {
+    aplicarDatosAdmin();
     document.querySelectorAll('.fade-up').forEach(el => {
       if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
     });
