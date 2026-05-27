@@ -272,10 +272,12 @@
 <!-- NAV -->
 <nav>
   <a href="index.html" class="nav-logo">
-    <svg viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M18.3226 36.8052C8.20106 36.8052 7.14468e-09 28.5669 4.51439e-07 18.4027C8.95796e-07 8.23695 8.20106 3.58477e-07 18.3226 8.00902e-07C28.4427 1.24327e-06 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="#1B1B1E"/>
-      <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#FBFBFB"/>
-    </svg>
+    <span id="nav-logo-icon">
+      <svg viewBox="0 0 37 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M18.3226 36.8052C8.20106 36.8052 7.14468e-09 28.5669 4.51439e-07 18.4027C8.95796e-07 8.23695 8.20106 3.58477e-07 18.3226 8.00902e-07C28.4427 1.24327e-06 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="#1B1B1E"/>
+        <path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#FBFBFB"/>
+      </svg>
+    </span>
     <span class="nav-logo-text">Tocki & Co.</span>
   </a>
   <ul class="nav-links">
@@ -306,7 +308,7 @@
 
 <!-- FOTO 1: gente trabajando -->
 <div class="photo-full">
-  <img
+  <img id="img-fabrica-gente"
     src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=1600&q=85"
     alt="Gente trabajando en Tocki"
     loading="lazy"
@@ -328,7 +330,7 @@
 
 <!-- FOTO 2: tejeduría -->
 <div class="photo-tejeduria">
-  <img
+  <img id="img-fabrica-tejeduria"
     src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1600&q=85"
     alt="Tejeduría Tocki"
     loading="lazy"
@@ -371,6 +373,34 @@
 </a>
 
 <script>
+  // ── LEER DATOS DEL ADMIN ──
+  function aplicarDatosAdmin() {
+    try {
+      const d = localStorage.getItem('tocki_data');
+      if(!d) return;
+      const S = JSON.parse(d);
+
+      // Foto gente trabajando
+      if(S.slots && S.slots.fabrica_gente) {
+        const img = document.getElementById('img-fabrica-gente');
+        if(img) img.src = 'fotos/' + S.slots.fabrica_gente;
+      }
+
+      // Foto tejeduría
+      if(S.slots && S.slots.fabrica_tejeduria) {
+        const img = document.getElementById('img-fabrica-tejeduria');
+        if(img) img.src = 'fotos/' + S.slots.fabrica_tejeduria;
+      }
+
+      // Logo isotipo en nav
+      if(S.svgs && S.svgs.logo_isotipo) {
+        const wrap = document.getElementById('nav-logo-icon');
+        if(wrap) wrap.innerHTML = `<img src="logos/${S.svgs.logo_isotipo}" alt="Tocki logo" style="width:24px;height:24px;object-fit:contain;">`;
+      }
+    } catch(e) {}
+  }
+
+  // ── HAMBURGER ──
   function toggleMenu() {
     document.getElementById('hamburger').classList.toggle('open');
     document.getElementById('mobileMenu').classList.toggle('open');
@@ -382,11 +412,14 @@
     });
   });
 
+  // ── FADE-UP ──
   const obs = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
   }, { threshold: 0.1 });
   document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
+
   window.addEventListener('load', () => {
+    aplicarDatosAdmin();
     document.querySelectorAll('.fade-up').forEach(el => {
       if (el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
     });
