@@ -35,7 +35,7 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
 .nav-hamburger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
 .nav-mobile-menu { display:none; position:fixed; top:56px; left:0; right:0; background:var(--light); border-bottom:1px solid rgba(0,0,0,0.07); z-index:99; flex-direction:column; padding:12px 0 20px; transform:translateY(-8px); opacity:0; transition:transform 0.25s, opacity 0.25s; pointer-events:none; }
 .nav-mobile-menu.open { transform:translateY(0); opacity:1; pointer-events:all; }
-.nav-mobile-menu a { text-decoration:none; font-size:16px; font-weight:400; color:var(--dark); padding:14px 28px; transition:color 0.2s; }
+.nav-mobile-menu a { text-decoration:none; font-size:16px; font-weight:400; color:var(--dark); padding:14px 28px; transition:color 0.2s; display:block; }
 .nav-mobile-menu a.active { color:var(--blue); font-weight:500; }
 
 /* HERO */
@@ -43,8 +43,49 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
 .hero-headline { font-size:clamp(22px,2.8vw,36px); font-weight:400; color:var(--dark); line-height:1.3; }
 .hero-headline strong { font-weight:700; }
 
+/* ARTÍCULOS */
+.articulos-section { padding:80px 48px 60px; background:var(--light); }
+
+.articulos-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:32px; gap:24px; flex-wrap:wrap; }
+.articulos-title { font-size:clamp(28px,4vw,48px); font-weight:700; color:var(--dark); letter-spacing:-0.01em; flex-shrink:0; }
+
+.search-filter-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+.search-wrap { position:relative; }
+.search-wrap svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--dark); opacity:0.35; pointer-events:none; }
+.search-input { width:220px; background:var(--white); border:1px solid var(--border); border-radius:6px; font-family:'Poppins',sans-serif; font-size:13px; color:var(--dark); padding:9px 12px 9px 36px; outline:none; transition:border-color 0.2s; }
+.search-input:focus { border-color:var(--blue); }
+.search-input::placeholder { color:rgba(0,0,0,0.28); }
+.filter-btns { display:flex; gap:8px; flex-wrap:wrap; }
+.filter-btn { font-family:'Poppins',sans-serif; font-size:12px; font-weight:500; padding:7px 14px; border-radius:20px; border:1px solid var(--border); background:transparent; color:rgba(0,0,0,0.5); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
+.filter-btn:hover { color:var(--dark); border-color:rgba(0,0,0,0.25); }
+.filter-btn.active { background:var(--blue); border-color:var(--blue); color:var(--white); }
+.results-count { font-size:12px; color:rgba(0,0,0,0.35); white-space:nowrap; }
+
+/* GRID */
+.articulos-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.art-card { position:relative; aspect-ratio:3/4; overflow:hidden; cursor:pointer; border-radius:2px; background:#e0e0e0; }
+.art-card img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s ease; }
+.art-card:hover img { transform:scale(1.05); }
+.art-card-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#e8e8e8; color:rgba(0,0,0,0.2); font-size:12px; text-align:center; }
+.art-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(10,10,30,0.75) 0%,rgba(10,10,30,0.1) 55%,transparent 100%); display:flex; align-items:flex-end; padding:18px 16px; transition:background 0.3s; }
+.art-card:hover .art-overlay { background:linear-gradient(to top,rgba(10,10,30,0.85) 0%,rgba(10,10,30,0.25) 55%,transparent 100%); }
+.art-name { font-size:13px; font-weight:600; color:var(--white); letter-spacing:0.04em; text-transform:uppercase; }
+.art-card.hidden { display:none; }
+.empty-state { grid-column:1/-1; text-align:center; padding:60px 24px; color:rgba(0,0,0,0.3); font-size:14px; }
+
+/* INTRO COMPOSICIÓN */
+.composicion-section { padding:60px 48px 80px; background:var(--light); border-top:1px solid rgba(0,0,0,0.06); }
+.composicion-intro { max-width:640px; margin-bottom:36px; }
+.composicion-body { font-size:14px; font-weight:400; color:var(--dark); opacity:0.75; line-height:1.85; margin-bottom:20px; }
+.composicion-line { width:100%; height:1px; background:rgba(0,0,0,0.1); margin-bottom:28px; }
+.composicion-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
+.composicion-list li { font-size:14px; font-weight:700; color:var(--dark); line-height:1.5; }
+
 /* CARTA DE COLORES */
-.colores-section { width:100%; overflow:hidden; }
+.colores-section { padding:0 0 0; background:var(--light); }
+.colores-titulo { padding:60px 48px 32px; }
+.colores-titulo h2 { font-size:clamp(22px,3vw,36px); font-weight:700; color:var(--dark); letter-spacing:-0.01em; margin-bottom:8px; }
+.colores-titulo p { font-size:14px; color:var(--dark); opacity:0.6; }
 .colores-grid { display:grid; grid-template-columns:repeat(4,1fr); }
 .color-block { aspect-ratio:4/3; position:relative; cursor:default; overflow:hidden; }
 .color-block .color-label { position:absolute; inset:0; display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-end; padding:14px 16px; background:linear-gradient(to top,rgba(0,0,0,0.5) 0%,transparent 65%); opacity:0; transition:opacity 0.25s; }
@@ -52,85 +93,31 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
 .color-label-code { font-size:10px; font-weight:600; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.6); margin-bottom:2px; line-height:1; }
 .color-label-name { font-size:12px; font-weight:500; letter-spacing:0.04em; color:rgba(255,255,255,0.95); line-height:1; }
 
-/* INTRO */
-.catalogo-intro { padding:80px 48px 56px; background:var(--light); max-width:640px; }
-.catalogo-intro-body { font-size:14px; font-weight:400; color:var(--dark); opacity:0.75; line-height:1.85; margin-bottom:28px; }
-.catalogo-intro-line { width:100%; height:1px; background:rgba(0,0,0,0.12); margin-bottom:36px; }
-.composicion-list { list-style:none; display:flex; flex-direction:column; gap:6px; }
-.composicion-list li { font-size:14px; font-weight:700; color:var(--dark); line-height:1.5; }
-
-/* BUSCADOR + FILTROS */
-.tejidos-section { padding:0 48px 100px; background:var(--light); }
-.tejidos-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; gap:24px; flex-wrap:wrap; }
-.tejidos-title { font-size:clamp(28px,4vw,48px); font-weight:700; color:var(--dark); letter-spacing:-0.01em; flex-shrink:0; }
-
-.search-filter-bar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-
-.search-wrap { position:relative; }
-.search-wrap svg { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--dark); opacity:0.35; pointer-events:none; }
-.search-input { width:220px; background:var(--white); border:1px solid var(--border); border-radius:6px; font-family:'Poppins',sans-serif; font-size:13px; color:var(--dark); padding:9px 12px 9px 36px; outline:none; transition:border-color 0.2s; }
-.search-input:focus { border-color:var(--blue); }
-.search-input::placeholder { color:rgba(0,0,0,0.28); }
-
-.filter-btn { font-family:'Poppins',sans-serif; font-size:12px; font-weight:500; padding:7px 14px; border-radius:20px; border:1px solid var(--border); background:transparent; color:rgba(0,0,0,0.5); cursor:pointer; transition:all 0.2s; white-space:nowrap; }
-.filter-btn:hover { color:var(--dark); border-color:rgba(0,0,0,0.25); }
-.filter-btn.active { background:var(--blue); border-color:var(--blue); color:var(--white); }
-
-.results-count { font-size:12px; color:rgba(0,0,0,0.35); margin-left:4px; white-space:nowrap; }
-
-/* GRID */
-.tejidos-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
-.tejido-card { position:relative; aspect-ratio:3/4; overflow:hidden; cursor:pointer; border-radius:2px; }
-.tejido-card img { width:100%; height:100%; object-fit:cover; display:block; transition:transform 0.5s ease; }
-.tejido-card:hover img { transform:scale(1.05); }
-.tejido-overlay { position:absolute; inset:0; background:linear-gradient(to top,rgba(10,10,30,0.75) 0%,rgba(10,10,30,0.1) 55%,transparent 100%); display:flex; align-items:flex-end; padding:18px 16px; transition:background 0.3s; }
-.tejido-card:hover .tejido-overlay { background:linear-gradient(to top,rgba(10,10,30,0.85) 0%,rgba(10,10,30,0.25) 55%,transparent 100%); }
-.tejido-name { font-size:13px; font-weight:600; color:var(--white); letter-spacing:0.04em; text-transform:uppercase; }
-.tejido-card.hidden { display:none; }
-
-/* EMPTY STATE */
-.empty-state { grid-column:1/-1; text-align:center; padding:60px 24px; color:rgba(0,0,0,0.3); font-size:14px; }
-
-/* ── MODAL: diseño ficha técnica ── */
+/* MODAL */
 .modal-overlay { position:fixed; inset:0; background:rgba(10,10,20,0.6); z-index:500; display:flex; align-items:center; justify-content:center; padding:24px; opacity:0; pointer-events:none; transition:opacity 0.3s; backdrop-filter:blur(4px); }
 .modal-overlay.open { opacity:1; pointer-events:all; }
-
 .modal { background:var(--white); max-width:900px; width:100%; display:grid; grid-template-columns:1fr 1fr; position:relative; transform:translateY(20px); transition:transform 0.3s; border-radius:3px; overflow:hidden; max-height:90vh; }
 .modal-overlay.open .modal { transform:translateY(0); }
-
-/* Foto lado izquierdo */
 .modal-foto { position:relative; overflow:hidden; min-height:480px; background:#e8e8e8; }
 .modal-foto img { width:100%; height:100%; object-fit:cover; display:block; }
-.modal-foto-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#efefef; color:rgba(0,0,0,0.2); font-size:13px; }
-
-/* Ficha técnica lado derecho */
+.modal-foto-placeholder { width:100%; height:100%; display:flex; align-items:center; justify-content:center; color:rgba(0,0,0,0.2); font-size:13px; min-height:480px; }
 .modal-ficha { padding:52px 48px; display:flex; flex-direction:column; overflow-y:auto; }
-
 .modal-close { position:absolute; top:16px; right:16px; background:rgba(255,255,255,0.9); border:none; cursor:pointer; width:32px; height:32px; border-radius:50%; font-size:16px; display:flex; align-items:center; justify-content:center; transition:background 0.2s; z-index:2; color:var(--dark); }
 .modal-close:hover { background:var(--white); }
-
 .modal-nombre { font-size:clamp(28px,3.5vw,42px); font-weight:700; color:var(--dark); line-height:1.1; margin-bottom:10px; letter-spacing:-0.01em; }
 .modal-desc { font-size:14px; font-weight:400; color:var(--dark); opacity:0.6; line-height:1.75; margin-bottom:28px; max-width:320px; }
-
-/* Tabla ficha */
 .modal-table { width:100%; border-collapse:collapse; margin-bottom:28px; }
 .modal-table tr { border-bottom:1px solid rgba(0,0,0,0.08); }
 .modal-table tr:first-child { border-top:1px solid rgba(0,0,0,0.08); }
 .modal-table td { padding:14px 0; font-size:14px; vertical-align:top; }
 .modal-table .td-label { font-weight:600; color:var(--dark); width:130px; padding-right:16px; }
 .modal-table .td-val { color:var(--dark); opacity:0.7; }
-
-/* Colores disponibles */
 .modal-colores-label { font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:rgba(0,0,0,0.35); margin-bottom:12px; }
 .modal-colores-dots { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:32px; }
-.modal-color-dot { width:28px; height:28px; border-radius:50%; border:2px solid rgba(0,0,0,0.08); cursor:default; transition:transform 0.15s; title:attr(title); }
+.modal-color-dot { width:28px; height:28px; border-radius:50%; border:2px solid rgba(0,0,0,0.08); transition:transform 0.15s; }
 .modal-color-dot:hover { transform:scale(1.15); }
-
-/* Logo Tocki en modal */
 .modal-brand { display:flex; align-items:center; gap:8px; margin-top:auto; padding-top:20px; }
 .modal-brand-text { font-size:13px; font-weight:700; letter-spacing:0.06em; text-transform:uppercase; color:var(--dark); }
-
-/* CTA WhatsApp en modal */
 .btn-modal-wa { display:inline-flex; align-items:center; gap:8px; background:var(--blue); color:var(--white); font-family:'Poppins',sans-serif; font-size:13px; font-weight:500; padding:12px 22px; border-radius:50px; text-decoration:none; margin-bottom:20px; transition:background 0.2s, transform 0.15s; }
 .btn-modal-wa:hover { background:var(--blue-h); transform:translateY(-1px); }
 
@@ -156,36 +143,29 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
   .nav-links { display:none; }
   .nav-hamburger { display:flex; }
   .nav-mobile-menu { display:flex; }
-
   .hero-screen { padding-left:24px; padding-right:24px; }
   .hero-headline { font-size:clamp(20px,6vw,28px); }
-
-  .colores-grid { grid-template-columns:repeat(3,1fr); }
-  .color-block .color-label { opacity:1; }
-
-  .catalogo-intro { padding:56px 24px 40px; }
-
-  .tejidos-section { padding:0 16px 64px; }
-  .tejidos-header { flex-direction:column; align-items:flex-start; gap:16px; }
-  .tejidos-title { font-size:clamp(22px,6vw,32px); }
+  .articulos-section { padding:56px 16px 40px; }
+  .articulos-header { flex-direction:column; align-items:flex-start; gap:16px; }
+  .articulos-title { font-size:clamp(22px,6vw,32px); }
   .search-filter-bar { width:100%; }
   .search-input { width:100%; }
-  .filter-btns { display:flex; gap:6px; overflow-x:auto; padding-bottom:4px; flex-wrap:nowrap; }
+  .filter-btns { overflow-x:auto; flex-wrap:nowrap; padding-bottom:4px; }
   .filter-btns::-webkit-scrollbar { display:none; }
-  .filter-btn { white-space:nowrap; flex-shrink:0; }
-
-  .tejidos-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
-
-  /* Modal mobile: drawer */
+  .filter-btn { flex-shrink:0; }
+  .articulos-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+  .composicion-section { padding:48px 24px 60px; }
+  .colores-titulo { padding:48px 24px 24px; }
+  .colores-grid { grid-template-columns:repeat(3,1fr); }
+  .color-block .color-label { opacity:1; }
   .modal-overlay { align-items:flex-end; padding:0; }
   .modal { grid-template-columns:1fr; max-height:92vh; border-radius:16px 16px 0 0; }
   .modal-foto { min-height:240px; max-height:240px; }
+  .modal-foto-placeholder { min-height:240px; }
   .modal-ficha { padding:28px 24px 36px; }
   .modal-nombre { font-size:26px; }
-
   footer { grid-template-columns:1fr; padding:36px 24px; gap:20px; }
   .wa-btn { bottom:20px; right:20px; width:46px; height:46px; }
-  .wa-btn svg { width:22px; height:22px; }
 }
 </style>
 </head>
@@ -207,7 +187,6 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
     <span></span><span></span><span></span>
   </button>
 </nav>
-
 <div class="nav-mobile-menu" id="mobileMenu">
   <a href="index.html">inicio</a>
   <a href="fabrica.html">la fábrica</a>
@@ -217,132 +196,47 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
 
 <!-- HERO -->
 <section class="hero-screen">
-  <p class="hero-headline fade-up"><strong>Amplia</strong> carta de colores para procesos reales.</p>
+  <p class="hero-headline fade-up"><strong>Catálogo vivo.</strong> Más de 100 artículos.</p>
 </section>
 
-<!-- CARTA DE COLORES -->
-<div class="colores-section fade-up">
-  <div class="colores-grid">
-    <div class="color-block" style="background:#FF0090"><div class="color-label"><span class="color-label-code">T-001</span><span class="color-label-name">Fucsia</span></div></div>
-    <div class="color-block" style="background:#ffffff;border:1px solid #e8e8e8"><div class="color-label" style="background:linear-gradient(to top,rgba(0,0,0,0.15) 0%,transparent 65%)"><span class="color-label-code">T-002</span><span class="color-label-name">Blanco</span></div></div>
-    <div class="color-block" style="background:#800080"><div class="color-label"><span class="color-label-code">T-003</span><span class="color-label-name">Púrpura</span></div></div>
-    <div class="color-block" style="background:#FFD700"><div class="color-label"><span class="color-label-code">T-004</span><span class="color-label-name">Amarillo</span></div></div>
-    <div class="color-block" style="background:#AAFF66"><div class="color-label"><span class="color-label-code">T-005</span><span class="color-label-name">Verde Lima</span></div></div>
-    <div class="color-block" style="background:#B0BEC5"><div class="color-label"><span class="color-label-code">T-006</span><span class="color-label-name">Gris Perla</span></div></div>
-    <div class="color-block" style="background:#DDFF00"><div class="color-label"><span class="color-label-code">T-007</span><span class="color-label-name">Amarillo Neón</span></div></div>
-    <div class="color-block" style="background:#002FA7"><div class="color-label"><span class="color-label-code">T-008</span><span class="color-label-name">Azul Klein</span></div></div>
-    <div class="color-block" style="background:#2A0A14"><div class="color-label"><span class="color-label-code">T-009</span><span class="color-label-name">Bordo Oscuro</span></div></div>
-    <div class="color-block" style="background:#4A4530"><div class="color-label"><span class="color-label-code">T-010</span><span class="color-label-name">Verde Oliva</span></div></div>
-    <div class="color-block" style="background:#6A0DAD"><div class="color-label"><span class="color-label-code">T-011</span><span class="color-label-name">Violeta</span></div></div>
-    <div class="color-block" style="background:#008080"><div class="color-label"><span class="color-label-code">T-012</span><span class="color-label-name">Teal</span></div></div>
-    <div class="color-block" style="background:#CC44CC"><div class="color-label"><span class="color-label-code">T-013</span><span class="color-label-name">Malva</span></div></div>
-    <div class="color-block" style="background:#222222"><div class="color-label"><span class="color-label-code">T-014</span><span class="color-label-name">Negro</span></div></div>
-    <div class="color-block" style="background:#3A8EE6"><div class="color-label"><span class="color-label-code">T-015</span><span class="color-label-name">Celeste</span></div></div>
-    <div class="color-block" style="background:#4A3FD4"><div class="color-label"><span class="color-label-code">T-016</span><span class="color-label-name">Azul Eléctrico</span></div></div>
-    <div class="color-block" style="background:#780050"><div class="color-label"><span class="color-label-code">T-017</span><span class="color-label-name">Ciruela</span></div></div>
-    <div class="color-block" style="background:#181818"><div class="color-label"><span class="color-label-code">T-018</span><span class="color-label-name">Negro Profundo</span></div></div>
-    <div class="color-block" style="background:#FF2200"><div class="color-label"><span class="color-label-code">T-019</span><span class="color-label-name">Rojo</span></div></div>
-    <div class="color-block" style="background:#00DD55"><div class="color-label"><span class="color-label-code">T-020</span><span class="color-label-name">Verde Esmeralda</span></div></div>
-  </div>
-</div>
-
-<!-- INTRO -->
-<div class="catalogo-intro fade-up">
-  <p class="catalogo-intro-body">Tejidos pensados para producir, transformar y crear.<br>Un catálogo que se mueve según las necesidades de cada proyecto.</p>
-  <div class="catalogo-intro-line"></div>
-  <ul class="composicion-list">
-    <li>Algodón</li><li>Viscosa</li><li>Elastano fibra</li>
-    <li>Acetato</li><li>Microfibra</li><li>Poliamida</li>
-  </ul>
-</div>
-
-<!-- TEJIDOS -->
-<div class="tejidos-section">
-  <div class="tejidos-header">
-    <h2 class="tejidos-title fade-up">Más de 100 artículos</h2>
+<!-- ARTÍCULOS -->
+<section class="articulos-section">
+  <div class="articulos-header">
+    <h2 class="articulos-title fade-up">Artículos</h2>
     <div class="search-filter-bar">
       <div class="search-wrap">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
         <input class="search-input" type="text" id="searchInput" placeholder="Buscar tejido..." oninput="filtrar()">
       </div>
-      <div class="filter-btns">
+      <div class="filter-btns" id="filterBtns">
         <button class="filter-btn active" data-cat="" onclick="setCat(this)">Todos</button>
-        <button class="filter-btn" data-cat="Jersey" onclick="setCat(this)">Jersey</button>
-        <button class="filter-btn" data-cat="Sublimados" onclick="setCat(this)">Sublimados</button>
-        <button class="filter-btn" data-cat="Deportivo" onclick="setCat(this)">Deportivo</button>
-        <button class="filter-btn" data-cat="Térmicos" onclick="setCat(this)">Térmicos</button>
-        <button class="filter-btn" data-cat="Frisas" onclick="setCat(this)">Frisas</button>
-        <button class="filter-btn" data-cat="Fantasía" onclick="setCat(this)">Fantasía</button>
       </div>
       <span class="results-count" id="resultsCount"></span>
     </div>
   </div>
+  <div class="articulos-grid" id="articulosGrid"></div>
+</section>
 
-  <div class="tejidos-grid" id="tejidosGrid">
-
-    <div class="tejido-card fade-up" data-cat="Jersey" data-nombre="Jersey" data-ancho="1,50 m" data-comp="80% Algodón / 20% Elastano" data-terminacion="Lisa y suave" data-gramaje="180 g/m2" data-desc="Tejido de punto liviano y versátil, ideal para prendas de uso diario. Excelente caída y confort." data-colores="#222222,#FF0090,#3A8EE6,#B0BEC5,#2A0A14,#FF2200,#008080,#DDFF00" data-img="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80" alt="Jersey">
-      <div class="tejido-overlay"><span class="tejido-name">Jersey</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Jersey" data-nombre="Jersey Elastizado" data-ancho="1,50 m" data-comp="70% Algodón / 25% Poliéster / 5% Elastano" data-terminacion="Lisa" data-gramaje="200 g/m2" data-desc="Mayor elasticidad transversal y longitudinal. Ideal para ropa deportiva y ajustada." data-colores="#222222,#FFFFFF,#3A8EE6,#00DD55,#FFD700" data-img="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80" alt="Jersey Elastizado">
-      <div class="tejido-overlay"><span class="tejido-name">Jersey Elastizado</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Sublimados" data-nombre="Sublimados" data-ancho="1,50 m" data-comp="100% Poliéster" data-terminacion="Lisa y sedosa" data-gramaje="160 g/m2" data-desc="Alta densidad para procesos de sublimación. Colores vivos y duraderos." data-colores="#FFFFFF" data-img="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Sublimados">
-      <div class="tejido-overlay"><span class="tejido-name">Sublimados</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Fantasía" data-nombre="Rústico" data-ancho="1,40 m" data-comp="60% Algodón / 40% Viscosa" data-terminacion="Texturada" data-gramaje="260 g/m2" data-desc="Tejido con textura pronunciada y carácter. Aporta volumen y personalidad a colecciones de autor." data-colores="#4A4530,#2A0A14,#222222,#B0BEC5" data-img="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Rústico">
-      <div class="tejido-overlay"><span class="tejido-name">Rústico</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Deportivo" data-nombre="Poliéster con LYCRA" data-ancho="1,50 m" data-comp="85% Poliéster / 15% LYCRA®" data-terminacion="Lisa y sedosa" data-gramaje="240 g/m2" data-desc="Resistencia y elasticidad superiores. Fibra LYCRA® certificada. Indicado para indumentaria técnica y deportiva." data-colores="#222222,#4A3FD4,#FF2200,#00DD55" data-img="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Poliéster con LYCRA">
-      <div class="tejido-overlay"><span class="tejido-name">Poliéster con LYCRA</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Fantasía" data-nombre="Fantasía" data-ancho="Variable" data-comp="Variable según artículo" data-terminacion="Variable" data-gramaje="Variable" data-desc="Estructuras poco convencionales con combinaciones de fibras que generan efectos visuales únicos." data-colores="#780050,#6A0DAD,#CC44CC,#FF0090" data-img="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=600&q=80" alt="Fantasía">
-      <div class="tejido-overlay"><span class="tejido-name">Fantasía</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Térmicos" data-nombre="Térmicos" data-ancho="1,50 m" data-comp="50% Poliéster / 50% Acrílico" data-terminacion="Interior afelpado" data-gramaje="320 g/m2" data-desc="Alta retención de calor con peso mínimo. Ideal para ropa de abrigo y prendas técnicas de frío." data-colores="#222222,#FFFFFF,#B0BEC5" data-img="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Térmicos">
-      <div class="tejido-overlay"><span class="tejido-name">Térmicos</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Jersey" data-nombre="Jersey con LYCRA" data-ancho="1,50 m" data-comp="75% Algodón / 20% Modal / 5% LYCRA®" data-terminacion="Lisa y suave" data-gramaje="220 g/m2" data-desc="La comodidad del jersey con la elasticidad de LYCRA®. El más usado en moda femenina y básicos urbanos." data-colores="#222222,#FFFFFF,#2A0A14,#4A4530,#3A8EE6" data-img="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80" alt="Jersey con LYCRA">
-      <div class="tejido-overlay"><span class="tejido-name">Jersey con LYCRA</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Jersey" data-nombre="Remería" data-ancho="1,60 m" data-comp="100% Algodón peinado" data-terminacion="Lisa" data-gramaje="180 g/m2" data-desc="Tejido clásico para remeras y básicos. Gramaje equilibrado, tacto suave y buena estabilidad dimensional." data-colores="#222222,#FFFFFF,#FF0090,#3A8EE6,#FF2200,#008080,#DDFF00" data-img="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80" alt="Remería">
-      <div class="tejido-overlay"><span class="tejido-name">Remería</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Deportivo" data-nombre="Deportivo" data-ancho="1,50 m" data-comp="88% Poliéster / 12% Elastano" data-terminacion="Lisa y sedosa" data-gramaje="200 g/m2" data-desc="Tejido técnico de alto rendimiento. Absorción de humedad, secado rápido y libertad de movimiento." data-colores="#222222,#4A3FD4,#FF2200,#00DD55,#DDFF00" data-img="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1581091226033-d5c48150dbaa?w=600&q=80" alt="Deportivo">
-      <div class="tejido-overlay"><span class="tejido-name">Deportivo</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Frisas" data-nombre="Frisas" data-ancho="1,50 m" data-comp="60% Algodón / 40% Poliéster" data-terminacion="Interior afelpado" data-gramaje="300 g/m2" data-desc="Interior afelpado para máximo confort térmico. Muy usado en ropa de descanso y urbana." data-colores="#222222,#B0BEC5,#2A0A14,#3A8EE6" data-img="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Frisas">
-      <div class="tejido-overlay"><span class="tejido-name">Frisas</span></div>
-    </div>
-
-    <div class="tejido-card fade-up" data-cat="Deportivo" data-nombre="Spiders/Vaplex" data-ancho="1,50 m" data-comp="80% Poliamida / 20% Elastano" data-terminacion="Lisa y sedosa" data-gramaje="180 g/m2" data-desc="Ultraliviano y de alta elasticidad. Ideal para ropa de baño, running y aplicaciones de alto estiramiento." data-colores="#222222,#FFFFFF,#FF0090,#4A3FD4" data-img="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=800&q=80" onclick="abrirModal(this)">
-      <img src="https://images.unsplash.com/photo-1558618047-3c8c76ca7d13?w=600&q=80" alt="Spiders/Vaplex">
-      <div class="tejido-overlay"><span class="tejido-name">Spiders/Vaplex</span></div>
-    </div>
-
-    <div class="empty-state" id="emptyState" style="display:none;">No se encontraron tejidos con ese filtro.</div>
+<!-- COMPOSICIÓN -->
+<section class="composicion-section fade-up">
+  <div class="composicion-intro">
+    <p class="composicion-body">Tejidos pensados para producir, transformar y crear.<br>Un catálogo que se mueve según las necesidades de cada proyecto.</p>
+    <div class="composicion-line"></div>
+    <ul class="composicion-list">
+      <li>Algodón</li><li>Viscosa</li><li>Elastano fibra</li>
+      <li>Acetato</li><li>Microfibra</li><li>Poliamida</li>
+    </ul>
   </div>
-</div>
+</section>
+
+<!-- CARTA DE COLORES -->
+<section class="colores-section">
+  <div class="colores-titulo fade-up">
+    <h2>Amplia carta de colores</h2>
+    <p>Para procesos reales y proyectos de cualquier escala.</p>
+  </div>
+  <div class="colores-grid" id="coloresGrid"></div>
+</section>
 
 <!-- FOOTER -->
 <footer>
@@ -358,32 +252,22 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)cerrarModal()">
   <div class="modal" id="modal">
     <button class="modal-close" onclick="cerrarModal()">✕</button>
-
-    <!-- Foto -->
-    <div class="modal-foto" id="modalFoto">
-      <div class="modal-foto-placeholder">Sin imagen</div>
-    </div>
-
-    <!-- Ficha -->
+    <div class="modal-foto" id="modalFoto"><div class="modal-foto-placeholder">Sin imagen</div></div>
     <div class="modal-ficha">
       <h2 class="modal-nombre" id="modalNombre"></h2>
       <p class="modal-desc" id="modalDesc"></p>
-
       <table class="modal-table">
         <tr><td class="td-label">Ancho</td><td class="td-val" id="mAncho"></td></tr>
         <tr><td class="td-label">Composición</td><td class="td-val" id="mComp"></td></tr>
         <tr><td class="td-label">Terminación</td><td class="td-val" id="mTerminacion"></td></tr>
         <tr><td class="td-label">Gramaje</td><td class="td-val" id="mGramaje"></td></tr>
       </table>
-
       <p class="modal-colores-label">Colores disponibles</p>
       <div class="modal-colores-dots" id="modalColores"></div>
-
       <a href="" class="btn-modal-wa" id="modalWaBtn" target="_blank">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
         Consultar por WhatsApp
       </a>
-
       <div class="modal-brand">
         <svg width="18" height="18" viewBox="0 0 37 37" fill="none"><path d="M18.3226 36.8052C8.20106 36.8052 0 28.5669 0 18.4027C0 8.23695 8.20106 0 18.3226 0C28.4427 0 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="#1B1B1E"/><path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#FBFBFB"/></svg>
         <span class="modal-brand-text">TOCKI & CO.</span>
@@ -398,92 +282,196 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
 </a>
 
 <script>
-  // ── HAMBURGER ──
-  function toggleMenu() {
-    document.getElementById('hamburger').classList.toggle('open');
-    document.getElementById('mobileMenu').classList.toggle('open');
-  }
-  document.querySelectorAll('.nav-mobile-menu a').forEach(a => a.addEventListener('click', () => {
-    document.getElementById('hamburger').classList.remove('open');
-    document.getElementById('mobileMenu').classList.remove('open');
-  }));
+const DATA_KEY = 'tocki_data';
 
-  // ── FADE-UP ──
-  const obs = new IntersectionObserver(entries => {
-    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); obs.unobserve(e.target); } });
-  }, { threshold:0.08 });
-  document.querySelectorAll('.fade-up').forEach(el => obs.observe(el));
-  window.addEventListener('load', () => {
-    document.querySelectorAll('.fade-up').forEach(el => {
-      if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
-    });
+// Datos por defecto (se usan si el admin no tiene nada cargado aún)
+const DEFAULT_TEJIDOS = [
+  {id:1,nombre:'Jersey',desc:'Tejido de punto liviano y versátil, ideal para prendas de uso diario.',comp:'80% Algodón / 20% Elastano',usos:'Remeras, vestidos, básicos.',img:'',ancho:'1,50 m',terminacion:'Lisa y suave',gramaje:'180 g/m2',colores:'#222222,#FF0090,#3A8EE6,#B0BEC5',categoria:'Jersey'},
+  {id:2,nombre:'Jersey Elastizado',desc:'Mayor elasticidad transversal y longitudinal.',comp:'70% Algodón / 25% Poliéster / 5% Elastano',usos:'Ropa deportiva.',img:'',ancho:'1,50 m',terminacion:'Lisa',gramaje:'200 g/m2',colores:'#222222,#FFFFFF,#3A8EE6',categoria:'Jersey'},
+  {id:3,nombre:'Sublimados',desc:'Para procesos de sublimación. Colores vivos y duraderos.',comp:'100% Poliéster',usos:'Camisetas, uniformes.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'160 g/m2',colores:'#FFFFFF',categoria:'Sublimados'},
+  {id:4,nombre:'Rústico',desc:'Textura pronunciada y carácter único.',comp:'60% Algodón / 40% Viscosa',usos:'Colecciones de autor.',img:'',ancho:'1,40 m',terminacion:'Texturada',gramaje:'260 g/m2',colores:'#4A4530,#2A0A14,#222222',categoria:'Fantasía'},
+  {id:5,nombre:'Poliéster con LYCRA',desc:'Resistencia y elasticidad superiores. Fibra LYCRA® certificada.',comp:'85% Poliéster / 15% LYCRA®',usos:'Ropa técnica y deportiva.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'240 g/m2',colores:'#222222,#4A3FD4,#FF2200,#00DD55',categoria:'Deportivo'},
+  {id:6,nombre:'Fantasía',desc:'Estructuras poco convencionales con efectos visuales únicos.',comp:'Variable según artículo',usos:'Moda de diseñador.',img:'',ancho:'Variable',terminacion:'Variable',gramaje:'Variable',colores:'#780050,#6A0DAD,#CC44CC',categoria:'Fantasía'},
+  {id:7,nombre:'Térmicos',desc:'Alta retención de calor con peso mínimo.',comp:'50% Poliéster / 50% Acrílico',usos:'Ropa de abrigo.',img:'',ancho:'1,50 m',terminacion:'Interior afelpado',gramaje:'320 g/m2',colores:'#222222,#FFFFFF,#B0BEC5',categoria:'Térmicos'},
+  {id:8,nombre:'Jersey con LYCRA',desc:'La comodidad del jersey con la elasticidad de LYCRA®.',comp:'75% Algodón / 20% Modal / 5% LYCRA®',usos:'Moda femenina, básicos premium.',img:'',ancho:'1,50 m',terminacion:'Lisa y suave',gramaje:'220 g/m2',colores:'#222222,#FFFFFF,#2A0A14,#3A8EE6',categoria:'Jersey'},
+  {id:9,nombre:'Remería',desc:'Tejido clásico para remeras y básicos.',comp:'100% Algodón peinado',usos:'Remeras, uniformes.',img:'',ancho:'1,60 m',terminacion:'Lisa',gramaje:'180 g/m2',colores:'#222222,#FFFFFF,#FF0090,#3A8EE6,#FF2200',categoria:'Remería'},
+  {id:10,nombre:'Deportivo',desc:'Tejido técnico de alto rendimiento. Absorción de humedad y secado rápido.',comp:'88% Poliéster / 12% Elastano',usos:'Running, fútbol, gym.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'200 g/m2',colores:'#222222,#4A3FD4,#FF2200,#00DD55',categoria:'Deportivo'},
+  {id:11,nombre:'Frisas',desc:'Interior afelpado para máximo confort térmico.',comp:'60% Algodón / 40% Poliéster',usos:'Buzos, ropa de descanso.',img:'',ancho:'1,50 m',terminacion:'Interior afelpado',gramaje:'300 g/m2',colores:'#222222,#B0BEC5,#2A0A14',categoria:'Frisas'},
+  {id:12,nombre:'Spiders/Vaplex',desc:'Ultraliviano y de alta elasticidad.',comp:'80% Poliamida / 20% Elastano',usos:'Trajes de baño, danza.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'180 g/m2',colores:'#222222,#FFFFFF,#FF0090',categoria:'Deportivo'},
+];
+
+const DEFAULT_COLORES = [
+  {id:1,codigo:'T-001',nombre:'Fucsia',hex:'#FF0090'},{id:2,codigo:'T-002',nombre:'Blanco',hex:'#FFFFFF'},
+  {id:3,codigo:'T-003',nombre:'Púrpura',hex:'#800080'},{id:4,codigo:'T-004',nombre:'Amarillo',hex:'#FFD700'},
+  {id:5,codigo:'T-005',nombre:'Verde Lima',hex:'#AAFF66'},{id:6,codigo:'T-006',nombre:'Gris Perla',hex:'#B0BEC5'},
+  {id:7,codigo:'T-007',nombre:'Amarillo Neón',hex:'#DDFF00'},{id:8,codigo:'T-008',nombre:'Azul Klein',hex:'#002FA7'},
+  {id:9,codigo:'T-009',nombre:'Bordo Oscuro',hex:'#2A0A14'},{id:10,codigo:'T-010',nombre:'Verde Oliva',hex:'#4A4530'},
+  {id:11,codigo:'T-011',nombre:'Violeta',hex:'#6A0DAD'},{id:12,codigo:'T-012',nombre:'Teal',hex:'#008080'},
+  {id:13,codigo:'T-013',nombre:'Malva',hex:'#CC44CC'},{id:14,codigo:'T-014',nombre:'Negro',hex:'#222222'},
+  {id:15,codigo:'T-015',nombre:'Celeste',hex:'#3A8EE6'},{id:16,codigo:'T-016',nombre:'Azul Eléctrico',hex:'#4A3FD4'},
+  {id:17,codigo:'T-017',nombre:'Ciruela',hex:'#780050'},{id:18,codigo:'T-018',nombre:'Negro Profundo',hex:'#181818'},
+  {id:19,codigo:'T-019',nombre:'Rojo',hex:'#FF2200'},{id:20,codigo:'T-020',nombre:'Verde Esmeralda',hex:'#00DD55'},
+];
+
+// ── CARGAR DATOS DEL ADMIN ──
+let tejidos = DEFAULT_TEJIDOS;
+let colores = DEFAULT_COLORES;
+let catActiva = '';
+
+function cargarDatos() {
+  try {
+    const d = localStorage.getItem(DATA_KEY);
+    if(d) {
+      const parsed = JSON.parse(d);
+      if(parsed.tejidos && parsed.tejidos.length > 0) tejidos = parsed.tejidos;
+      if(parsed.colores && parsed.colores.length > 0) colores = parsed.colores;
+    }
+  } catch(e) {}
+}
+
+// ── RENDER ARTÍCULOS ──
+function renderArticulos() {
+  const grid = document.getElementById('articulosGrid');
+  const filterContainer = document.getElementById('filterBtns');
+
+  // Build category filters from data
+  const cats = [...new Set(tejidos.map(t => t.categoria).filter(Boolean))];
+  filterContainer.innerHTML = `<button class="filter-btn active" data-cat="" onclick="setCat(this)">Todos</button>`;
+  cats.forEach(c => {
+    filterContainer.innerHTML += `<button class="filter-btn" data-cat="${c}" onclick="setCat(this)">${c}</button>`;
   });
 
-  // ── FILTROS ──
-  let catActiva = '';
+  // Render cards
+  grid.innerHTML = tejidos.map(t => {
+    const imgSrc = t.img ? `fotos/${t.img}` : '';
+    return `<div class="art-card fade-up" data-id="${t.id}" data-cat="${t.categoria||''}" data-nombre="${t.nombre}" data-comp="${t.comp||''}" onclick="abrirModal(${t.id})">
+      ${imgSrc
+        ? `<img src="${imgSrc}" alt="${t.nombre}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+        : ''
+      }
+      <div class="art-card-placeholder" style="${imgSrc?'display:none':'display:flex'}">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      </div>
+      <div class="art-overlay"><span class="art-name">${t.nombre}</span></div>
+    </div>`;
+  }).join('');
 
-  function setCat(btn) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    catActiva = btn.dataset.cat;
-    filtrar();
+  // Observe new fade-up elements
+  document.querySelectorAll('.art-card.fade-up').forEach(el => fadeObs.observe(el));
+
+  filtrar();
+}
+
+// ── RENDER COLORES ──
+function renderColores() {
+  document.getElementById('coloresGrid').innerHTML = colores.map(c => `
+    <div class="color-block" style="background:${c.hex};${c.hex==='#FFFFFF'||c.hex==='#ffffff'?'border:1px solid #e8e8e8':''}">
+      <div class="color-label">
+        <span class="color-label-code">${c.codigo}</span>
+        <span class="color-label-name">${c.nombre}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ── FILTROS ──
+function setCat(btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  catActiva = btn.dataset.cat;
+  filtrar();
+}
+
+function filtrar() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  const cards = document.querySelectorAll('.art-card');
+  let visible = 0;
+  cards.forEach(card => {
+    const matchCat = !catActiva || card.dataset.cat === catActiva;
+    const matchQ   = !q || card.dataset.nombre.toLowerCase().includes(q) || (card.dataset.comp||'').toLowerCase().includes(q);
+    const show = matchCat && matchQ;
+    card.classList.toggle('hidden', !show);
+    if(show) visible++;
+  });
+  document.getElementById('resultsCount').textContent = visible + ' resultado' + (visible !== 1 ? 's' : '');
+
+  // empty state
+  const existing = document.querySelector('.empty-state');
+  if(existing) existing.remove();
+  if(visible === 0) {
+    const empty = document.createElement('div');
+    empty.className = 'empty-state';
+    empty.textContent = 'No se encontraron artículos con ese filtro.';
+    document.getElementById('articulosGrid').appendChild(empty);
+  }
+}
+
+// ── MODAL ──
+function abrirModal(id) {
+  const t = tejidos.find(x => x.id === id);
+  if(!t) return;
+
+  document.getElementById('modalNombre').textContent  = t.nombre;
+  document.getElementById('modalDesc').textContent    = t.desc || '';
+  document.getElementById('mAncho').textContent       = t.ancho || '—';
+  document.getElementById('mComp').textContent        = t.comp || '—';
+  document.getElementById('mTerminacion').textContent = t.terminacion || '—';
+  document.getElementById('mGramaje').textContent     = t.gramaje || '—';
+
+  // Foto
+  const fotoEl = document.getElementById('modalFoto');
+  if(t.img) {
+    fotoEl.innerHTML = `<img src="fotos/${t.img}" alt="${t.nombre}" onerror="this.parentElement.innerHTML='<div class=\\'modal-foto-placeholder\\'>Sin imagen</div>'">`;
+  } else {
+    fotoEl.innerHTML = `<div class="modal-foto-placeholder">Sin imagen</div>`;
   }
 
-  function filtrar() {
-    const q = document.getElementById('searchInput').value.toLowerCase().trim();
-    const cards = document.querySelectorAll('.tejido-card');
-    let visible = 0;
-    cards.forEach(card => {
-      const matchCat = !catActiva || card.dataset.cat === catActiva;
-      const matchQ   = !q || card.dataset.nombre.toLowerCase().includes(q) || card.dataset.comp.toLowerCase().includes(q);
-      const show = matchCat && matchQ;
-      card.classList.toggle('hidden', !show);
-      if(show) visible++;
-    });
-    document.getElementById('resultsCount').textContent = visible + ' resultado' + (visible !== 1 ? 's' : '');
-    document.getElementById('emptyState').style.display = visible === 0 ? 'block' : 'none';
-  }
+  // Colores
+  const cols = (t.colores || '').split(',').filter(Boolean);
+  document.getElementById('modalColores').innerHTML = cols.map(c =>
+    `<div class="modal-color-dot" style="background:${c.trim()}" title="${c.trim()}"></div>`
+  ).join('');
 
-  // Inicializar count
-  window.addEventListener('load', () => filtrar());
+  // WA
+  const msg = encodeURIComponent(`Hola, me interesa consultar sobre el tejido *${t.nombre}*. ¿Podés darme más información?`);
+  document.getElementById('modalWaBtn').href = `https://wa.me/5491166586254?text=${msg}`;
 
-  // ── MODAL ──
-  function abrirModal(card) {
-    document.getElementById('modalNombre').textContent    = card.dataset.nombre;
-    document.getElementById('modalDesc').textContent      = card.dataset.desc;
-    document.getElementById('mAncho').textContent         = card.dataset.ancho;
-    document.getElementById('mComp').textContent          = card.dataset.comp;
-    document.getElementById('mTerminacion').textContent   = card.dataset.terminacion;
-    document.getElementById('mGramaje').textContent       = card.dataset.gramaje;
+  document.getElementById('modalOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
 
-    // Foto
-    const fotoEl = document.getElementById('modalFoto');
-    const img = card.dataset.img;
-    fotoEl.innerHTML = img
-      ? `<img src="${img}" alt="${card.dataset.nombre}">`
-      : `<div class="modal-foto-placeholder">Sin imagen</div>`;
+function cerrarModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
 
-    // Colores (dots)
-    const coloresEl = document.getElementById('modalColores');
-    const cols = (card.dataset.colores || '').split(',').filter(Boolean);
-    coloresEl.innerHTML = cols.map(c =>
-      `<div class="modal-color-dot" style="background:${c.trim()}" title="${c.trim()}"></div>`
-    ).join('');
+document.addEventListener('keydown', e => { if(e.key === 'Escape') cerrarModal(); });
 
-    // WA link
-    const msg = encodeURIComponent(`Hola, me interesa consultar sobre el tejido *${card.dataset.nombre}*. ¿Podés darme más información?`);
-    document.getElementById('modalWaBtn').href = `https://wa.me/5491166586254?text=${msg}`;
+// ── HAMBURGER ──
+function toggleMenu() {
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+document.querySelectorAll('.nav-mobile-menu a').forEach(a => a.addEventListener('click', () => {
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobileMenu').classList.remove('open');
+}));
 
-    document.getElementById('modalOverlay').classList.add('open');
-    document.body.style.overflow = 'hidden';
-  }
+// ── FADE-UP ──
+const fadeObs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); fadeObs.unobserve(e.target); } });
+}, { threshold:0.08 });
+document.querySelectorAll('.fade-up').forEach(el => fadeObs.observe(el));
 
-  function cerrarModal() {
-    document.getElementById('modalOverlay').classList.remove('open');
-    document.body.style.overflow = '';
-  }
+// ── INIT ──
+cargarDatos();
+renderArticulos();
+renderColores();
 
-  document.addEventListener('keydown', e => { if(e.key === 'Escape') cerrarModal(); });
+window.addEventListener('load', () => {
+  document.querySelectorAll('.fade-up').forEach(el => {
+    if(el.getBoundingClientRect().top < window.innerHeight) el.classList.add('visible');
+  });
+});
 </script>
 </body>
 </html>
