@@ -8,9 +8,9 @@
 <style>
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 :root {
-  --blue:#3D3DE8; --blue-h:#2b2bd4;
-  --dark:#1B1B1E; --darker:#111111;
-  --light:#f9f9f7; --white:#ffffff;
+  --blue:#454ADE; --blue-h:#3338c4;
+  --dark:#1B1B1E; --darker:#1B1B1E;
+  --light:#FBFBFB; --white:#ffffff;
   --nav-height:68px;
   --border:rgba(0,0,0,0.09);
 }
@@ -19,9 +19,9 @@ body { font-family:'Poppins',sans-serif; background:var(--light); color:var(--da
 
 /* NAV */
 nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:flex; align-items:center; justify-content:space-between; padding:0 44px; z-index:100; background:var(--light); }
-.nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--dark); }
-.nav-logo svg { width:24px; height:24px; flex-shrink:0; }
-.nav-logo-text { font-size:14px; font-weight:600; letter-spacing:0.04em; text-transform:uppercase; }
+.nav-logo { display:flex; align-items:center; text-decoration:none; }
+.nav-logo svg { display:block; height:18px; width:auto; }
+.nav-logo-text { display:none; }
 .nav-links { display:flex; gap:44px; list-style:none; }
 .nav-links a { text-decoration:none; font-size:15px; font-weight:400; color:var(--dark); transition:color 0.2s; }
 .nav-links a:hover { color:var(--blue); }
@@ -71,7 +71,21 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
 .art-card:hover .art-overlay { background:linear-gradient(to top,rgba(10,10,30,0.85) 0%,rgba(10,10,30,0.25) 55%,transparent 100%); }
 .art-name { font-size:13px; font-weight:600; color:var(--white); letter-spacing:0.04em; text-transform:uppercase; }
 .art-card.hidden { display:none; }
-.empty-state { grid-column:1/-1; text-align:center; padding:60px 24px; color:rgba(0,0,0,0.3); font-size:14px; }
+.empty-state { display:none; }
+
+/* PRÓXIMAMENTE GALLERY */
+.proximamente-section { padding:60px 48px 80px; background:var(--light); border-top:1px solid rgba(0,0,0,0.06); }
+.proximamente-title { font-size:clamp(20px,2.5vw,28px); font-weight:700; color:var(--dark); letter-spacing:-0.01em; margin-bottom:8px; }
+.proximamente-sub { font-size:14px; color:var(--dark); opacity:0.45; margin-bottom:36px; }
+.proximamente-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+.prox-card { aspect-ratio:3/4; border-radius:2px; background:#EBEBEB; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; }
+.prox-card::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg, #F2F2F2 25%, #E4E4E4 50%, #F2F2F2 75%); background-size:400% 400%; animation:shimmer 2.8s ease-in-out infinite; }
+@keyframes shimmer { 0%{background-position:0% 0%} 50%{background-position:100% 100%} 100%{background-position:0% 0%} }
+.prox-label { position:relative; z-index:1; font-size:11px; font-weight:500; letter-spacing:0.12em; text-transform:uppercase; color:rgba(0,0,0,0.28); }
+@media (max-width:768px) {
+  .proximamente-section { padding:48px 16px 60px; }
+  .proximamente-grid { grid-template-columns:repeat(2,1fr); gap:8px; }
+}
 
 /* INTRO COMPOSICIÓN */
 .composicion-section { padding:60px 48px 80px; background:var(--light); border-top:1px solid rgba(0,0,0,0.06); }
@@ -173,9 +187,21 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
 
 <!-- NAV -->
 <nav>
-  <a href="index.html" class="nav-logo">
-    <span id="nav-logo-icon"><svg viewBox="0 0 37 37" fill="none"><path d="M18.3226 36.8052C8.20106 36.8052 7.14468e-09 28.5669 4.51439e-07 18.4027C8.95796e-07 8.23695 8.20106 3.58477e-07 18.3226 8.00902e-07C28.4427 1.24327e-06 36.6452 8.23695 36.6452 18.4027C36.6452 28.5669 28.4427 36.8052 18.3226 36.8052Z" fill="#1B1B1E"/><path d="M18.3222 24.646C14.9193 24.646 12.1613 21.8868 12.1613 18.4843C12.1613 15.0804 14.9193 12.3242 18.3222 12.3242C21.7251 12.3242 24.4831 15.0804 24.4831 18.4843C24.4831 21.8868 21.7251 24.646 18.3222 24.646Z" fill="#FBFBFB"/></svg></span>
-    <span class="nav-logo-text">Tocki & Co.</span>
+  <a href="index.html" class="nav-logo" aria-label="Tocki & Co. — Inicio">
+    <svg width="120" height="19" viewBox="0 0 240 37" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M58.7457 9.74976H52.4317C52.1011 9.74976 52.002 9.55142 52.002 9.25392V8.75786C52.002 8.49361 52.2003 8.32812 52.4317 8.32812H66.6466C66.9109 8.32812 67.0762 8.52646 67.0762 8.75786V9.32003C67.0762 9.55142 66.9109 9.74976 66.6466 9.74976H60.2994V31.0386C60.2994 31.27 60.101 31.4683 59.7704 31.4683H59.1752C58.944 31.4683 58.7455 31.27 58.7455 31.0386L58.7457 9.74976Z" fill="#1B1B1E"/>
+      <path d="M80.6627 8C87.3073 8 92.5963 13.3223 92.5963 19.934C92.5963 26.5782 87.3073 31.8011 80.6627 31.8011C74.0512 31.8011 68.7617 26.5782 68.7617 19.934C68.7617 13.3223 74.0512 8 80.6627 8ZM80.6627 30.3466C86.4476 30.3466 91.1418 25.7189 91.1418 19.934C91.1418 14.1489 86.4476 9.45449 80.6627 9.45449C74.8778 9.45449 70.2164 14.1487 70.2164 19.934C70.2164 25.7189 74.8778 30.3466 80.6627 30.3466Z" fill="#1B1B1E"/>
+      <path d="M108.266 8C111.637 8 114.15 9.12392 116.298 11.0743C116.464 11.2397 116.497 11.504 116.332 11.6695L115.802 12.2312C115.604 12.4296 115.439 12.3965 115.241 12.1982C113.356 10.5123 110.976 9.48754 108.265 9.48754C102.48 9.48754 97.9514 14.2148 97.9514 19.934C97.9514 25.6198 102.48 30.3136 108.265 30.3136C111.109 30.3136 113.257 29.1901 115.241 27.5372C115.439 27.3718 115.637 27.3718 115.769 27.4709L116.332 28.0329C116.497 28.1653 116.497 28.4296 116.332 28.5951C114.084 30.7768 111.208 31.8015 108.266 31.8015C101.654 31.8015 96.2988 26.5786 96.2988 19.9344C96.299 13.3223 101.654 8 108.266 8Z" fill="#1B1B1E"/>
+      <path d="M121.684 8.82398C121.684 8.52647 121.882 8.32812 122.18 8.32812H122.774C123.072 8.32812 123.271 8.52647 123.271 8.82398V19.0387L134.51 8.55952C134.774 8.32813 134.874 8.32812 135.171 8.32812H136.096C136.46 8.32812 136.493 8.69175 136.295 8.89009L124.791 19.5676L136.658 30.9064C136.857 31.0716 136.791 31.4683 136.361 31.4683H135.303C135.005 31.4683 134.84 31.4022 134.576 31.1378L123.271 20.1626V31.0386C123.271 31.3692 123.039 31.4683 122.774 31.4683H122.113C121.849 31.4683 121.684 31.3033 121.684 31.0386L121.684 8.82398Z" fill="#1B1B1E"/>
+      <path d="M141.053 8.75786C141.053 8.52646 141.251 8.32812 141.482 8.32812H142.21C142.441 8.32812 142.64 8.52646 142.64 8.75786V31.0386C142.64 31.303 142.408 31.4683 142.176 31.4683H141.482C141.251 31.4683 141.053 31.27 141.053 31.0386V8.75786Z" fill="#1B1B1E"/>
+      <path d="M161.187 19.0411L160.691 18.5122C159.27 16.9585 157.782 15.3055 157.849 13.1238C157.849 10.8429 159.567 8 163.501 8C167.038 8 168.857 10.4131 168.857 12.9915C168.857 15.7352 166.014 17.9172 163.402 19.2725L170.146 25.9499C171.402 23.9335 172.129 21.5203 172.129 19.2062C172.129 19.0409 172.096 18.7103 172.096 18.545C172.096 18.3798 172.162 18.2473 172.361 18.2473H173.055C173.286 18.2473 173.386 18.3467 173.452 18.545C173.518 18.7764 173.518 19.0409 173.518 19.2062C173.518 21.8178 172.625 24.6274 171.138 26.9086L174.576 30.3134C174.84 30.5446 174.972 30.8423 174.708 31.0737L174.179 31.5695C173.914 31.8338 173.683 31.6685 173.518 31.5034L170.212 28.1647C168.328 30.3795 165.716 31.8009 162.576 31.8009C158.609 31.8009 156.295 28.9911 156.295 25.7518C156.295 22.2806 158.84 20.2972 161.187 19.0411ZM162.609 30.4789C165.352 30.4789 167.633 29.1899 169.286 27.2063L162.113 19.9336C159.964 21.0908 157.749 22.8761 157.749 25.752C157.749 28.3963 159.766 30.4789 162.609 30.4789ZM167.402 13.0246C167.402 11.1734 166.08 9.2892 163.402 9.2892C160.559 9.2892 159.237 11.3057 159.237 13.157C159.204 14.7105 160.295 16.1319 161.485 17.3552C161.816 17.6525 162.113 17.9833 162.444 18.3138C164.856 17.0908 167.402 15.4049 167.402 13.0246Z" fill="#1B1B1E"/>
+      <path d="M196.721 8C200.093 8 202.605 9.12392 204.754 11.0743C204.919 11.2397 204.952 11.504 204.787 11.6695L204.258 12.2312C204.06 12.4296 203.894 12.3965 203.696 12.1982C201.811 10.5123 199.431 9.48754 196.721 9.48754C190.935 9.48754 186.407 14.2148 186.407 19.934C186.407 25.6198 190.935 30.3136 196.721 30.3136C199.563 30.3136 201.712 29.1901 203.696 27.5372C203.894 27.3718 204.092 27.3718 204.225 27.4709L204.787 28.0329C204.952 28.1653 204.952 28.4296 204.787 28.5951C202.539 30.7768 199.663 31.8015 196.721 31.8015C190.109 31.8015 184.754 26.5786 184.754 19.9344C184.754 13.3223 190.109 8 196.721 8Z" fill="#1B1B1E"/>
+      <path d="M220.291 8C226.936 8 232.225 13.3223 232.225 19.934C232.225 26.5782 226.936 31.8011 220.291 31.8011C213.68 31.8011 208.391 26.5782 208.391 19.934C208.391 13.3223 213.68 8 220.291 8ZM220.291 30.3466C226.076 30.3466 230.771 25.7189 230.771 19.934C230.771 14.1489 226.076 9.45449 220.291 9.45449C214.506 9.45449 209.845 14.1487 209.845 19.934C209.845 25.7189 214.506 30.3466 220.291 30.3466Z" fill="#1B1B1E"/>
+      <path d="M240.002 29.3602C240.002 30.8259 238.814 32.0134 237.349 32.0134C235.883 32.0134 234.695 30.8259 234.695 29.3602C234.695 27.8948 235.883 26.707 237.349 26.707C238.814 26.707 240.002 27.8948 240.002 29.3602Z" fill="#1B1B1E"/>
+      <path d="M238.234 29.3608C238.234 29.8492 237.838 30.2451 237.349 30.2451C236.86 30.2451 236.465 29.8492 236.465 29.3608C236.465 28.8724 236.86 28.4766 237.349 28.4766C237.838 28.4766 238.234 28.8724 238.234 29.3608Z" fill="#FBFBFB"/>
+      <path d="M18.3239 36.8052C8.20234 36.8052 0.00128777 28.5669 0.00128821 18.4027C0.00128865 8.23695 8.20235 -1.24333e-06 18.3239 -8.00907e-07C28.444 -3.58544e-07 36.6465 8.23695 36.6465 18.4027C36.6465 28.5669 28.444 36.8052 18.3239 36.8052Z" fill="#1B1B1E"/>
+      <path d="M18.3235 24.646C14.9206 24.646 12.1626 21.8868 12.1626 18.4843C12.1626 15.0804 14.9206 12.3242 18.3235 12.3242C21.7264 12.3242 24.4844 15.0804 24.4844 18.4843C24.4844 21.8868 21.7264 24.646 18.3235 24.646Z" fill="#FBFBFB"/>
+    </svg>
   </a>
   <ul class="nav-links">
     <li><a href="index.html">inicio</a></li>
@@ -215,6 +241,20 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
     </div>
   </div>
   <div class="articulos-grid" id="articulosGrid"></div>
+</section>
+
+<!-- PRÓXIMAMENTE -->
+<section class="proximamente-section fade-up">
+  <div class="proximamente-grid">
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+    <div class="prox-card"><span class="prox-label">próximamente</span></div>
+  </div>
 </section>
 
 <!-- COMPOSICIÓN -->
@@ -285,20 +325,7 @@ footer { background:var(--darker); padding:44px 48px; display:grid; grid-templat
 const DATA_KEY = 'tocki_data';
 
 // Datos por defecto (se usan si el admin no tiene nada cargado aún)
-const DEFAULT_TEJIDOS = [
-  {id:1,nombre:'Jersey',desc:'Tejido de punto liviano y versátil, ideal para prendas de uso diario.',comp:'80% Algodón / 20% Elastano',usos:'Remeras, vestidos, básicos.',img:'',ancho:'1,50 m',terminacion:'Lisa y suave',gramaje:'180 g/m2',colores:'#222222,#FF0090,#3A8EE6,#B0BEC5',categoria:'Jersey'},
-  {id:2,nombre:'Jersey Elastizado',desc:'Mayor elasticidad transversal y longitudinal.',comp:'70% Algodón / 25% Poliéster / 5% Elastano',usos:'Ropa deportiva.',img:'',ancho:'1,50 m',terminacion:'Lisa',gramaje:'200 g/m2',colores:'#222222,#FFFFFF,#3A8EE6',categoria:'Jersey'},
-  {id:3,nombre:'Sublimados',desc:'Para procesos de sublimación. Colores vivos y duraderos.',comp:'100% Poliéster',usos:'Camisetas, uniformes.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'160 g/m2',colores:'#FFFFFF',categoria:'Sublimados'},
-  {id:4,nombre:'Rústico',desc:'Textura pronunciada y carácter único.',comp:'60% Algodón / 40% Viscosa',usos:'Colecciones de autor.',img:'',ancho:'1,40 m',terminacion:'Texturada',gramaje:'260 g/m2',colores:'#4A4530,#2A0A14,#222222',categoria:'Fantasía'},
-  {id:5,nombre:'Poliéster con LYCRA',desc:'Resistencia y elasticidad superiores. Fibra LYCRA® certificada.',comp:'85% Poliéster / 15% LYCRA®',usos:'Ropa técnica y deportiva.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'240 g/m2',colores:'#222222,#4A3FD4,#FF2200,#00DD55',categoria:'Deportivo'},
-  {id:6,nombre:'Fantasía',desc:'Estructuras poco convencionales con efectos visuales únicos.',comp:'Variable según artículo',usos:'Moda de diseñador.',img:'',ancho:'Variable',terminacion:'Variable',gramaje:'Variable',colores:'#780050,#6A0DAD,#CC44CC',categoria:'Fantasía'},
-  {id:7,nombre:'Térmicos',desc:'Alta retención de calor con peso mínimo.',comp:'50% Poliéster / 50% Acrílico',usos:'Ropa de abrigo.',img:'',ancho:'1,50 m',terminacion:'Interior afelpado',gramaje:'320 g/m2',colores:'#222222,#FFFFFF,#B0BEC5',categoria:'Térmicos'},
-  {id:8,nombre:'Jersey con LYCRA',desc:'La comodidad del jersey con la elasticidad de LYCRA®.',comp:'75% Algodón / 20% Modal / 5% LYCRA®',usos:'Moda femenina, básicos premium.',img:'',ancho:'1,50 m',terminacion:'Lisa y suave',gramaje:'220 g/m2',colores:'#222222,#FFFFFF,#2A0A14,#3A8EE6',categoria:'Jersey'},
-  {id:9,nombre:'Remería',desc:'Tejido clásico para remeras y básicos.',comp:'100% Algodón peinado',usos:'Remeras, uniformes.',img:'',ancho:'1,60 m',terminacion:'Lisa',gramaje:'180 g/m2',colores:'#222222,#FFFFFF,#FF0090,#3A8EE6,#FF2200',categoria:'Remería'},
-  {id:10,nombre:'Deportivo',desc:'Tejido técnico de alto rendimiento. Absorción de humedad y secado rápido.',comp:'88% Poliéster / 12% Elastano',usos:'Running, fútbol, gym.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'200 g/m2',colores:'#222222,#4A3FD4,#FF2200,#00DD55',categoria:'Deportivo'},
-  {id:11,nombre:'Frisas',desc:'Interior afelpado para máximo confort térmico.',comp:'60% Algodón / 40% Poliéster',usos:'Buzos, ropa de descanso.',img:'',ancho:'1,50 m',terminacion:'Interior afelpado',gramaje:'300 g/m2',colores:'#222222,#B0BEC5,#2A0A14',categoria:'Frisas'},
-  {id:12,nombre:'Spiders/Vaplex',desc:'Ultraliviano y de alta elasticidad.',comp:'80% Poliamida / 20% Elastano',usos:'Trajes de baño, danza.',img:'',ancho:'1,50 m',terminacion:'Lisa y sedosa',gramaje:'180 g/m2',colores:'#222222,#FFFFFF,#FF0090',categoria:'Deportivo'},
-];
+const DEFAULT_TEJIDOS = [];
 
 const DEFAULT_COLORES = [
   {id:1,codigo:'T-001',nombre:'Fucsia',hex:'#FF0090'},{id:2,codigo:'T-002',nombre:'Blanco',hex:'#FFFFFF'},
