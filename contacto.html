@@ -43,6 +43,7 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
   display:grid;
   grid-template-columns:1fr 1fr;
   align-items:center;
+  justify-items:center;
   padding:0 44px;
   padding-top:var(--nav-height);
   gap:48px;
@@ -51,6 +52,8 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
 .hero-left {
   display:flex;
   align-items:center;
+  justify-content:center;
+  width:100%;
 }
 
 .btn-visita {
@@ -60,9 +63,9 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
   background:var(--blue);
   color:var(--white);
   font-family:'Poppins',sans-serif;
-  font-size:clamp(16px,2vw,22px);
+  font-size:clamp(15px,1.6vw,20px);
   font-weight:500;
-  padding:16px 52px;
+  padding:14px 44px;
   border-radius:60px;
   text-decoration:none;
   transition:background 0.2s, transform 0.2s, box-shadow 0.2s;
@@ -78,14 +81,15 @@ nav { position:fixed; top:0; left:0; right:0; height:var(--nav-height); display:
 .hero-right {
   display:flex;
   flex-direction:column;
-  gap:0;
+  justify-content:center;
+  width:100%;
 }
 
 .hero-copy {
-  font-size:clamp(15px,1.6vw,20px);
+  font-size:clamp(14px,1.4vw,18px);
   font-weight:400;
   color:rgba(255,255,255,0.85);
-  line-height:1.6;
+  line-height:1.7;
 }
 .hero-copy strong { font-weight:700; color:var(--white); }
 
@@ -105,21 +109,35 @@ footer { background:var(--dark); border-top:none; padding:44px 48px; display:gri
 .fade-up.visible { opacity:1; transform:translateY(0); }
 
 /* ── MOBILE ── */
-@media (max-width:900px) {
+@media (max-width:768px) {
   :root { --nav-height:56px; }
-  nav { padding:0 24px; }
+  nav { padding:0 20px; }
   .nav-links { display:none; }
   .nav-hamburger { display:flex; }
   .nav-mobile-menu { display:flex; }
 
   .hero {
     grid-template-columns:1fr;
-    min-height:auto;
-    padding:calc(var(--nav-height) + 60px) 24px 80px;
-    gap:48px;
+    min-height:100vh;
+    align-content:center;
+    justify-items:start;
+    padding:calc(var(--nav-height) + 48px) 20px 64px;
+    gap:40px;
   }
-  .btn-visita { font-size:18px; padding:14px 40px; }
-  footer { grid-template-columns:1fr; padding:36px 24px; gap:20px; }
+  .hero-left {
+    justify-content:flex-start;
+    width:100%;
+  }
+  .btn-visita {
+    font-size:16px;
+    padding:14px 36px;
+    width:100%;
+    justify-content:center;
+  }
+  .hero-right { width:100%; }
+  .hero-copy { font-size:15px; line-height:1.7; }
+
+  footer { grid-template-columns:1fr; padding:36px 20px; gap:16px; }
   .wa-btn { bottom:20px; right:20px; width:46px; height:46px; }
 }
 </style>
